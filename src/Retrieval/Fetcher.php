@@ -14,7 +14,7 @@ class Fetcher {
 	/**
 	 * @var HttpClientInterface
 	 */
-	private HttpClientInterface $client;
+	private $client;
 
 	/**
 	 * @param string $user

@@ -19,17 +19,17 @@ class OdlFetchCommand extends Command {
 	/**
 	 * @var SymfonyStyle|null
 	 */
-	private ?SymfonyStyle $io;
+	private $io;
 
 	/**
 	 * @var string|null
 	 */
-	private ?string $dir;
+	private $dir;
 
 	/**
 	 * @var Fetcher
 	 */
-	private Fetcher $fetcher;
+	private $fetcher;
 
 	/**
 	 * @param Fetcher $fetcher
