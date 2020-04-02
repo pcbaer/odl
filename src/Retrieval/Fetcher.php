@@ -2,6 +2,7 @@
 declare(strict_types = 1);
 namespace App\Retrieval;
 
+use Symfony\Contracts\HttpClient\Exception\ExceptionInterface;
 use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
@@ -31,6 +32,7 @@ class Fetcher {
 
 	/**
 	 * @return string
+	 * @throws ExceptionInterface
 	 */
 	public function getBaseFile(): string {
 		return $this->fetch(self::BASE_FILE);
@@ -39,14 +41,20 @@ class Fetcher {
 	/**
 	 * @param string $id
 	 * @return string
+	 * @throws ExceptionInterface
 	 */
 	public function getStation(string $id): string {
 		return $this->fetch($id . '.json');
 	}
 
+	/**
+	 * @param string $fileName
+	 * @return string
+	 * @throws ExceptionInterface
+	 */
 	private function fetch(string $fileName): string {
 		$url      = self::URL . '/' . $fileName;
 		$response = $this->client->request('GET', $url);
 		return $response->getContent();
 	}
-};
+}

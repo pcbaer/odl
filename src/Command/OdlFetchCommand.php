@@ -2,10 +2,18 @@
 declare(strict_types = 1);
 namespace App\Command;
 
+use App\Repository\StationRepository;
+use App\Retrieval\Parser;
+use Doctrine\DBAL\DBALException;
+use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
+use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\ORMException;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
+use Symfony\Contracts\HttpClient\Exception\ExceptionInterface;
 
 use App\Retrieval\Fetcher;
 
@@ -32,11 +40,29 @@ class OdlFetchCommand extends Command {
 	private $fetcher;
 
 	/**
+	 * @var Parser
+	 */
+	private $parser;
+
+	/**
+	 * @var StationRepository
+	 */
+	private $stationRepository;
+
+	/**
+	 * @var EntityManagerInterface
+	 */
+	private $entityManager;
+
+	/**
 	 * @param Fetcher $fetcher
 	 */
-	public function __construct(Fetcher $fetcher) {
+	public function __construct(Fetcher $fetcher, StationRepository $stationRepository,
+								EntityManagerInterface $entityManager) {
 		parent::__construct();
-		$this->fetcher = $fetcher;
+		$this->fetcher           = $fetcher;
+		$this->stationRepository = $stationRepository;
+		$this->entityManager     = $entityManager;
 	}
 
 	/**
@@ -50,14 +76,13 @@ class OdlFetchCommand extends Command {
 	 * @param InputInterface $input
 	 * @param OutputInterface $output
 	 * @return int
-	 * @throws \RuntimeException
 	 */
 	protected function execute(InputInterface $input, OutputInterface $output): int {
 		$this->io = new SymfonyStyle($input, $output);
 
 		try {
 			$this->init();
-			$this->fetch();
+			// $this->fetch(); //TODO
 			$this->import();
 		} catch (\Exception $e) {
 			$this->io->error($e->getMessage());
@@ -105,7 +130,7 @@ class OdlFetchCommand extends Command {
 	 * @throws \RuntimeException
 	 */
 	private function initTimestampDirectory(): void {
-		$timestamp = date('Y-m-d_His');
+		$timestamp = date('Y-m-d_His'); $timestamp = '2020-04-01_232006'; //TODO
 		$this->dir .= DIRECTORY_SEPARATOR . $timestamp;
 		@mkdir($this->dir);
 		if (is_dir($this->dir)) {
@@ -115,9 +140,16 @@ class OdlFetchCommand extends Command {
 		}
 	}
 
+	/**
+	 * @throws \RuntimeException
+	 */
 	private function fetch(): void {
-		$baseFile     = $this->dir . DIRECTORY_SEPARATOR . Fetcher::BASE_FILE;
-		$stationsFile = $this->fetcher->getBaseFile();
+		$baseFile = $this->dir . DIRECTORY_SEPARATOR . Fetcher::BASE_FILE;
+		try {
+			$stationsFile = $this->fetcher->getBaseFile();
+		} catch (ExceptionInterface $e) {
+			throw new \RuntimeException($e->getMessage(), $e->getCode(), $e);
+		}
 		if (!file_put_contents($baseFile, $stationsFile)) {
 			throw new \RuntimeException('Could not save stations.');
 		}
@@ -142,7 +174,7 @@ class OdlFetchCommand extends Command {
 				if (!file_put_contents($stationFile, $stationData)) {
 					throw new \RuntimeException('Could not save station ' . $id . '.');
 				}
-			} catch (\Exception $e) {
+			} catch (ExceptionInterface $e) {
 				$this->io->error($e->getMessage());
 				if (--$tries <= 0) {
 					throw new \RuntimeException('Too many fetching errors.');
@@ -153,7 +185,80 @@ class OdlFetchCommand extends Command {
 		}
 	}
 
+	/**
+	 * Import all data.
+	 *
+	 * @throws \RuntimeException
+	 */
 	private function import(): void {
+		$this->parser = new Parser($this->dir, $this->stationRepository);
+		$stations     = $this->importStations();
+		foreach ($stations as $odlId) {
+			$this->importMeasurements($odlId);
+		}
+	}
 
+	/**
+	 * Import station data.
+	 */
+	private function importStations(): array {
+		$this->io->note('Importing stations...');
+		$stations = [];
+
+		foreach ($this->parser->getStations() as $station) {
+			$odlId = $station->getOdlId();
+			if ($station->getId()) {
+				$this->debug('Updating station ' . $odlId . '.');
+			} else {
+				$this->io->note('New station ' . $odlId . ' (' . $station->getCity() . ').');
+			}
+			$this->entityManager->persist($station);
+			$stations[] = $odlId;
+		}
+
+		$this->entityManager->flush();
+		return $stations;
+	}
+
+	/**
+	 * @param string $odlId
+	 * @throws \RuntimeException
+	 */
+	private function importMeasurements(string $odlId): void {
+		$station = $this->stationRepository->findByOdlId($odlId);
+		if (!$station) {
+			throw new \RuntimeException('Station ' . $odlId . ' is not persistent.');
+		}
+		$count = 0;
+		$id    = $station->getId();
+
+		$connection   = $this->entityManager->getConnection();
+		$measurements = $this->parser->getMeasurements($odlId);
+		if (!$connection->beginTransaction()) {
+			throw new \RuntimeException('Transaction not started for measurements of ' . $id . '.');
+		}
+		foreach ($measurements as $time => $row) {
+			try {
+				$connection->insert('measurement', [
+					'station_id'  => $id,
+					'time'        => $time . ':00',
+					'dosage'      => $row['mw'],
+					'rain'        => $row['r'],
+					'abnormality' => $row['ps']
+				]);
+				$count++;
+			} catch (UniqueConstraintViolationException $e) {
+				$this->debug($e->getMessage());
+			}
+		}
+
+		try {
+			if (!$connection->commit()) {
+				throw new \RuntimeException('Transaction commit failed for measurements of ' . $id . '.');
+			}
+			$this->io->note($count . ' new rows imported for station ' . $odlId . '.');
+		} catch (DBALException $e) {
+			throw new \RuntimeException($e->getMessage(), $e->getCode(), $e);
+		}
 	}
 }
