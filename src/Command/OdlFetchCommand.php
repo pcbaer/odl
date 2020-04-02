@@ -55,9 +55,14 @@ class OdlFetchCommand extends Command {
 	protected function execute(InputInterface $input, OutputInterface $output): int {
 		$this->io = new SymfonyStyle($input, $output);
 
-		$this->init();
-		$this->fetch();
-		$this->import();
+		try {
+			$this->init();
+			$this->fetch();
+			$this->import();
+		} catch (\Exception $e) {
+			$this->io->error($e->getMessage());
+			return 1;
+		}
 
 		$this->io->success('New data fetched and imported.');
 		return 0;
@@ -111,8 +116,8 @@ class OdlFetchCommand extends Command {
 	}
 
 	private function fetch(): void {
-		$baseFile      = $this->dir . DIRECTORY_SEPARATOR . Fetcher::BASE_FILE;
-		$stationsFile  = $this->fetcher->getBaseFile();
+		$baseFile     = $this->dir . DIRECTORY_SEPARATOR . Fetcher::BASE_FILE;
+		$stationsFile = $this->fetcher->getBaseFile();
 		if (!file_put_contents($baseFile, $stationsFile)) {
 			throw new \RuntimeException('Could not save stations.');
 		}
@@ -123,18 +128,26 @@ class OdlFetchCommand extends Command {
 
 		$tries       = 10;
 		$stationKeys = array_keys($stations);
-		$this->io->note(count($stationKeys) . ' stations found.');
+		$i           = 0;
+		$n           = count($stationKeys);
+		$this->io->note($n . ' stations found.');
 		foreach ($stationKeys as $key) {
 			$id          = (string)$key;
 			$stationFile = $this->dir . DIRECTORY_SEPARATOR . $id . '.json';
 			sleep(2);
 
-			$this->debug('Fetching ' . $id . '...');
-			if (!file_put_contents($stationFile, $this->fetcher->getStation($id))) {
-				$this->io->error('Could not save station ' . $id . '.');
+			$this->debug('Fetching ' . $id . ' (' . ++$i . '/' . $n . ')...');
+			try {
+				$stationData = $this->fetcher->getStation($id);
+				if (!file_put_contents($stationFile, $stationData)) {
+					throw new \RuntimeException('Could not save station ' . $id . '.');
+				}
+			} catch (\Exception $e) {
+				$this->io->error($e->getMessage());
 				if (--$tries <= 0) {
 					throw new \RuntimeException('Too many fetching errors.');
 				}
+				$this->io->warning('Waiting 30 seconds before next try...');
 				sleep(30);
 			}
 		}
