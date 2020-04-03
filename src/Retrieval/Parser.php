@@ -80,7 +80,7 @@ class Parser {
 			if (is_array($values) && isset($values['mw1h']) && is_array($values['mw1h'])) {
 				$t  = $values['mw1h']['t'] ?? [];
 				$mw = $values['mw1h']['mw'] ?? [];
-				$ps = $values['mw1h']['mw'] ?? [];
+				$ps = $values['mw1h']['ps'] ?? [];
 				$n  = count($t);
 				if (count($mw) === $n && count($ps) === $n) {
 					for ($i = 0; $i < $n; $i++) {
