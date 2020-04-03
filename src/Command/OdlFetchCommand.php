@@ -2,20 +2,19 @@
 declare(strict_types = 1);
 namespace App\Command;
 
-use App\Repository\StationRepository;
-use App\Retrieval\Parser;
 use Doctrine\DBAL\DBALException;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
-use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\ORMException;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Contracts\HttpClient\Exception\ExceptionInterface;
 
+use App\Repository\StationRepository;
 use App\Retrieval\Fetcher;
+use App\Retrieval\Parser;
 
 class OdlFetchCommand extends Command {
 
@@ -69,7 +68,10 @@ class OdlFetchCommand extends Command {
 	 * Set command configuration.
 	 */
 	protected function configure(): void {
-		$this->setDescription('Connect to the BfS web service and fetch the latest ODL data.');
+		$this->setDescription('Fetch and import ODL data.');
+		$this->setHelp('This command connects to the BfS web service and fetches the latest ODL data.');
+		$this->addOption('fetch-only', 'f', InputOption::VALUE_NONE, 'Fetch only, do not import');
+		$this->addOption('import-dir', 'i', InputOption::VALUE_REQUIRED, 'Do not fetch, import given directory');
 	}
 
 	/**
@@ -80,10 +82,16 @@ class OdlFetchCommand extends Command {
 	protected function execute(InputInterface $input, OutputInterface $output): int {
 		$this->io = new SymfonyStyle($input, $output);
 
+		$importDir = $input->getOption('import-dir');
+		$fetchOnly = $input->getOption('fetch-only');
 		try {
-			$this->init();
-			// $this->fetch(); //TODO
-			$this->import();
+			$this->init($importDir);
+			if (!$importDir) {
+				$this->fetch();
+			}
+			if (!$fetchOnly) {
+				$this->import();
+			}
 		} catch (\Exception $e) {
 			$this->io->error($e->getMessage());
 			return 1;
@@ -103,11 +111,16 @@ class OdlFetchCommand extends Command {
 	}
 
 	/**
+	 * @param string|null $importDir
 	 * @throws \RuntimeException
 	 */
-	private function init(): void {
+	private function init(?string $importDir): void {
 		$this->initFetchDirectory();
-		$this->initTimestampDirectory();
+		if ($importDir) {
+			$this->checkImportDir($importDir);
+		} else {
+			$this->initTimestampDirectory();
+		}
 	}
 
 	/**
@@ -127,10 +140,21 @@ class OdlFetchCommand extends Command {
 	}
 
 	/**
+	 * @param string $importDir
+	 */
+	private function checkImportDir(string $importDir): void {
+		$this->dir .= DIRECTORY_SEPARATOR . $importDir;
+		if (!is_dir($this->dir)) {
+			throw new \RuntimeException('Import directory not found.');
+		}
+		$this->debug('Use import directory ' . $importDir . '.');
+	}
+
+	/**
 	 * @throws \RuntimeException
 	 */
 	private function initTimestampDirectory(): void {
-		$timestamp = date('Y-m-d_His'); $timestamp = '2020-04-01_232006'; //TODO
+		$timestamp  = date('Y-m-d_His');
 		$this->dir .= DIRECTORY_SEPARATOR . $timestamp;
 		@mkdir($this->dir);
 		if (is_dir($this->dir)) {
@@ -249,6 +273,8 @@ class OdlFetchCommand extends Command {
 				$count++;
 			} catch (UniqueConstraintViolationException $e) {
 				$this->debug($e->getMessage());
+			} catch (DBALException $e) {
+				throw new \RuntimeException($e->getMessage(), $e->getCode(), $e);
 			}
 		}
 
