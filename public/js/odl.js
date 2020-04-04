@@ -37,7 +37,7 @@ var chart = new Chart(context, {
 });
 
 let xhr = new XMLHttpRequest();
-xhr.open('GET', '/data');
+xhr.open('GET', '/odl/data');
 xhr.responseType = 'json';
 xhr.send();
 
