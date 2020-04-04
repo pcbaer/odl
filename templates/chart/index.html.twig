@@ -3,22 +3,10 @@
 {% block title %}Ortsdosisleistung{% endblock %}
 {% block header %}Ortsdosisleistung{% endblock %}
 
-{% block body %}
-    <main>
-        <div class="chart">
-            <canvas id="chart"></canvas>
-        </div>
-    </main>
-
-    <footer>
-        <span>
-            Datenquelle:
-            Bundesamt für Strahlenschutz, <a href="https://odlinfo.bfs.de">ODL-Info</a>
-        </span>
-        <span class="float-right">
-            <a href="https//www.hallerbach-it.de">Impressum</a>
-        </span>
-    </footer>
+{% block main %}
+    <div class="chart">
+        <canvas id="chart"></canvas>
+    </div>
 {% endblock %}
 
 {% block javascripts %}
