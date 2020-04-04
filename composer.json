@@ -20,6 +20,7 @@
         "ext-iconv": "*",
         "ext-json": "*",
 
+        "nnnick/chartjs": "~2.9.3",
         "sensio/framework-extra-bundle": "^5.1",
         "symfony/apache-pack": "^1.0",
         "symfony/asset": "5.0.*",
@@ -87,10 +88,12 @@
             "assets:install %PUBLIC_DIR%": "symfony-cmd"
         },
         "post-install-cmd": [
-            "@auto-scripts"
+            "@auto-scripts",
+            "bin/create-links.sh"
         ],
         "post-update-cmd": [
-            "@auto-scripts"
+            "@auto-scripts",
+            "bin/create-links.sh"
         ]
     },
     "conflict": {
