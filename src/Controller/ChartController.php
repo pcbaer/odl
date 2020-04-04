@@ -42,14 +42,14 @@ class ChartController extends AbstractController {
 	}
 
 	/**
-	 * @Route("/odl", name="odl")
+	 * @Route("/", name="index")
 	 */
 	public function index() {
 		return $this->render('chart/index.html.twig');
 	}
 
 	/**
-	 * @Route("/odl/data", name="data")
+	 * @Route("/data", name="data")
 	 */
 	public function data() {
 		return $this->json([
