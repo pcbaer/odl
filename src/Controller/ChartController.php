@@ -14,7 +14,7 @@ class ChartController extends AbstractController {
 
 	private const STATION = '053820081';
 
-	private const DAYS = 14;
+	private const DAYS = 10;
 
 	/**
 	 * @var EntityManagerInterface
