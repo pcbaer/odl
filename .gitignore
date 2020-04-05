@@ -19,5 +19,6 @@
 /odl.local.*
 /public/css/bootstrap.*
 /public/js/bootstrap.*
-/public/js/jquery.*
 /public/js/chart.*
+/public/js/jquery.*
+/public/js/moment*

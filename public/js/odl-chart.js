@@ -1,4 +1,5 @@
 $(function () {
+    moment.locale('de');
     odlChart('odl-chart');
 });
 
@@ -28,11 +29,11 @@ function odlChart(id) {
                     distribution: 'linear',
                     time: {
                         displayFormats: {
-                            hour: 'D.M. H:00'
+                            hour: 'D. MMMM YYYY'
                         },
-                        tooltipFormat: 'DD.MM.YYYY H:00',
+                        tooltipFormat: 'DD.MM.YYYY HH:00',
                         unit: 'hour',
-                        stepSize: 6
+                        stepSize: parseInt(config.css('line-height'))
                     }
                 }],
                 yAxes: [{

@@ -1,5 +1,6 @@
 #odl-chart span {
 	color: #ffe066;
 	background-color: #ffff00;
+	line-height: 24px;
 	display: none;
 }
