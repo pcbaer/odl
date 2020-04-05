@@ -4,12 +4,18 @@
 {% block header %}Ortsdosisleistung{% endblock %}
 
 {% block main %}
-    <div class="chart">
-        <canvas id="chart"></canvas>
+    <div class="row justify-content-center">
+        <div class="col col-xl-10">
+            <div id="odl-chart">
+                <span></span>
+                <canvas></canvas>
+            </div>
+        </div>
     </div>
 {% endblock %}
 
 {% block javascripts %}
-    <script src="{{ asset('js/chart.js') }}"></script>
+    {{ parent() }}
+    <script src="{{ asset('js/chart.bundle.min.js') }}"></script>
     <script src="{{ asset('js/odl.js') }}"></script>
 {% endblock %}

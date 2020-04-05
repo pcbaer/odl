@@ -5,26 +5,42 @@
         <meta charset="UTF-8">
         <link rel="icon" href="{{ asset('images/favicon.png') }}" type="image/png">
         {% block stylesheets %}
+            <link href="{{ asset('css/bootstrap.css') }}" rel="stylesheet"/>
             <link href="{{ asset('css/style.css') }}" rel="stylesheet"/>
         {% endblock %}
     </head>
     <body>
         <header>
-            <h1>{% block header %}{% endblock %}</h1>
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col">
+                        <h1>{% block header %}{% endblock %}</h1>
+                    </div>
+                </div>
+            </div>
         </header>
         <main>
-            {% block main %}{% endblock %}
+            <div class="container-fluid mt-3 mb-5">
+                {% block main %}{% endblock %}
+            </div>
         </main>
         <footer>
-            <span>
-                Datenquelle:
-                Bundesamt für Strahlenschutz,
-                <a href="https://odlinfo.bfs.de">ODL-Info</a>
-            </span>
-            <span class="float-right">
-                <a href="https://www.hallerbach-it.de">Impressum</a>
-            </span>
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-12 col-sm">
+                        Datenquelle:
+                        Bundesamt für Strahlenschutz,
+                        <a href="https://odlinfo.bfs.de">ODL-Info</a>
+                    </div>
+                    <div class="col-12 col-sm-auto">
+                        <a href="https://www.hallerbach-it.de">Impressum</a>
+                    </div>
+                </div>
+            </div>
         </footer>
-        {% block javascripts %}{% endblock %}
+        {% block javascripts %}
+            <script src="{{ asset('js/jquery.slim.min.js') }}"></script>
+            <script src="{{ asset('js/bootstrap.bundle.min.js') }}"></script>
+        {% endblock %}
     </body>
 </html>

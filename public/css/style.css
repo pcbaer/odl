@@ -1,11 +1,5 @@
-body {
-	background-color: #e6f6ff;
-}
-
-div.chart {
-	margin: 1.0rem;
-}
-
-.float-right {
-	float: right;
+#odl-chart span {
+	color: #ffe066;
+	background-color: #ffff00;
+	display: none;
 }

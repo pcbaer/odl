@@ -65,7 +65,7 @@ class ChartController extends AbstractController {
 		$query = $this->entityManager->getConnection()->createQueryBuilder();
 		$query->select('time AS t', 'dosage AS y')->from('measurement');
 		$query->andWhere('station_id = ' . $this->station->getId());
-		$query->andWhere("time >= '" . $this->time->format('Y-m-d H:i:s') . "'");
+		$query->andWhere("time >= '" . $this->time->format('Y-m-d') . "'");
 		return $query->execute()->fetchAll(FetchMode::ASSOCIATIVE);
 	}
 

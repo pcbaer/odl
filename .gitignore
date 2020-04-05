@@ -15,6 +15,9 @@
 ###< symfony/phpunit-bridge ###
 
 /.idea
-
 /composer.lock
 /odl.local.*
+/public/css/bootstrap.*
+/public/js/bootstrap.*
+/public/js/jquery.*
+/public/js/chart.*
