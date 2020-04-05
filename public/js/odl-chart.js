@@ -12,13 +12,20 @@ function odlChart(id) {
     let canvas = element.find('canvas')[0];
     let context = canvas.getContext('2d');
 
+    Chart.defaults.global.elements.point.pointStyle = 'triangle';
+    Chart.defaults.global.elements.point.radius = parseInt(config.css('width'));
+
     let chart = new Chart(context, {
         type: 'line',
         data: {
             datasets: [{
                 label: '',
+                pointBorderColor: config.css('color'),
+                pointBackgroundColor: config.css('color'),
                 backgroundColor: config.css('background-color'),
-                borderColor: config.css('color'),
+                borderColor: config.css('background-color'),
+                pointHitRadius: parseInt(config.css('height')),
+                spanGaps: true,
                 data: []
             }]
         },
