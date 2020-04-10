@@ -28,6 +28,15 @@ function odlChart(id) {
                 pointHitRadius: parseInt(config.css('height')),
                 spanGaps: true,
                 data: []
+            }, {
+                label: 'Hallerbach IT',
+                pointBorderColor: config.css('color'),
+                pointBackgroundColor: config.css('color'),
+                backgroundColor: '#80ff80',
+                borderColor: '#80ff80',
+                pointHitRadius: parseInt(config.css('height')),
+                spanGaps: true,
+                data: []
             }]
         },
         options: {
@@ -67,6 +76,7 @@ function odlChart(id) {
         let data = xhr.response.data;
         chart.data.datasets[0].data = xhr.response.data;
         chart.data.datasets[0].label = xhr.response.label;
+        chart.data.datasets[1].data = xhr.response.gammascout;
         chart.update();
     };
 }

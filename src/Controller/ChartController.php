@@ -53,8 +53,9 @@ class ChartController extends AbstractController {
 	 */
 	public function data() {
 		return $this->json([
-			'data'  => $this->getData(),
-			'label' => $this->getLabel()
+			'data'       => $this->getData(),
+			'gammascout' => $this->getGammascoutData(),
+			'label'      => $this->getLabel()
 		]);
 	}
 
@@ -65,6 +66,16 @@ class ChartController extends AbstractController {
 		$query = $this->entityManager->getConnection()->createQueryBuilder();
 		$query->select('time AS t', 'dosage AS y')->from('measurement');
 		$query->andWhere('station_id = ' . $this->station->getId());
+		$query->andWhere("time >= '" . $this->time->format('Y-m-d') . "'");
+		return $query->execute()->fetchAll(FetchMode::ASSOCIATIVE);
+	}
+
+	/**
+	 * @return array
+	 */
+	private function getGammascoutData(): array {
+		$query = $this->entityManager->getConnection()->createQueryBuilder();
+		$query->select('time AS t', 'dosage AS y')->from('gammascout');
 		$query->andWhere("time >= '" . $this->time->format('Y-m-d') . "'");
 		return $query->execute()->fetchAll(FetchMode::ASSOCIATIVE);
 	}
