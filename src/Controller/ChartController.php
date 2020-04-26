@@ -75,7 +75,7 @@ class ChartController extends AbstractController {
 	 */
 	private function getGammascoutData(): array {
 		$query = $this->entityManager->getConnection()->createQueryBuilder();
-		$query->select('time AS t', 'dosage AS y')->from('gammascout');
+		$query->select('time AS t', 'ROUND(dosage, 3) AS y')->from('gammascout');
 		$query->andWhere("time >= '" . $this->time->format('Y-m-d') . "'");
 		return $query->execute()->fetchAll(FetchMode::ASSOCIATIVE);
 	}
