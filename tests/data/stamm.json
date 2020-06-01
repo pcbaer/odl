@@ -1,0 +1,35 @@
+{
+	"064110003": {
+		"ort": "Darmstadt",
+		"kenn": "064110003",
+		"plz": "64295",
+		"status": 1,
+		"kid": 1,
+		"hoehe": 138,
+		"lon": 8.59,
+		"lat": 49.84,
+		"mw": 0.085
+	},
+	"120671201": {
+		"ort": "Eisenh\u00fcttenstadt",
+		"kenn": "120671201",
+		"plz": "15890",
+		"status": 1,
+		"kid": 2,
+		"hoehe": 43,
+		"lon": 14.66,
+		"lat": 52.16,
+		"mw": 0.068
+	},
+	"092751221": {
+		"ort": "F\u00fcrstenzell OT Gf\u00f6hret",
+		"kenn": "092751221",
+		"plz": "94081",
+		"status": 1,
+		"kid": 3,
+		"hoehe": 476,
+		"lon": 13.35,
+		"lat": 48.55,
+		"mw": 0.118
+	}
+}

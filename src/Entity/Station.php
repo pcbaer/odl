@@ -15,73 +15,73 @@ class Station {
 	 * @ORM\Column(type="smallint")
 	 * @var int
 	 */
-	private $id;
+	private $id = 0;
 
 	/**
 	 * @ORM\Column(type="string", length=9)
 	 * @var string
 	 */
-	private $odlId;
+	private $odlId = '';
 
 	/**
 	 * @ORM\Column(type="string", length=5)
 	 * @var string
 	 */
-	private $zip;
+	private $zip = '';
 
 	/**
 	 * @ORM\Column(type="string", length=255)
 	 * @var string
 	 */
-	private $city;
+	private $city = '';
 
 	/**
 	 * @ORM\Column(type="smallint")
 	 * @var int
 	 */
-	private $kid;
+	private $kid = 0;
 
 	/**
 	 * @ORM\Column(type="smallint")
 	 * @var int
 	 */
-	private $altitude;
+	private $altitude = 0;
 
 	/**
 	 * @ORM\Column(type="float")
 	 * @var float
 	 */
-	private $latitude;
+	private $latitude = 0.0;
 
 	/**
 	 * @ORM\Column(type="float")
 	 * @var float
 	 */
-	private $longitude;
+	private $longitude = 0.0;
 
 	/**
 	 * @ORM\Column(type="smallint")
 	 * @var int
 	 */
-	private $status;
+	private $status = 0;
 
 	/**
 	 * @ORM\Column(type="float")
 	 * @var float
 	 */
-	private $last;
+	private $last = 0.0;
 
 	/**
-	 * @return int|null
+	 * @return int
 	 */
-	public function getId(): ?int {
+	public function getId(): int {
 		return $this->id;
 	}
 
 	/**
-	 * @return string|null
+	 * @return string
 	 */
-	public function getOdlId(): ?string {
+	public function getOdlId(): string {
 		return $this->odlId;
 	}
 
@@ -95,9 +95,9 @@ class Station {
 	}
 
 	/**
-	 * @return string|null
+	 * @return string
 	 */
-	public function getZip(): ?string {
+	public function getZip(): string {
 		return $this->zip;
 	}
 
@@ -111,9 +111,9 @@ class Station {
 	}
 
 	/**
-	 * @return string|null
+	 * @return string
 	 */
-	public function getCity(): ?string {
+	public function getCity(): string {
 		return $this->city;
 	}
 
@@ -127,9 +127,9 @@ class Station {
 	}
 
 	/**
-	 * @return int|null
+	 * @return int
 	 */
-	public function getKid(): ?int {
+	public function getKid(): int {
 		return $this->kid;
 	}
 
@@ -143,9 +143,9 @@ class Station {
 	}
 
 	/**
-	 * @return int|null
+	 * @return int
 	 */
-	public function getAltitude(): ?int {
+	public function getAltitude(): int {
 		return $this->altitude;
 	}
 
@@ -159,9 +159,9 @@ class Station {
 	}
 
 	/**
-	 * @return float|null
+	 * @return float
 	 */
-	public function getLatitude(): ?float {
+	public function getLatitude(): float {
 		return $this->latitude;
 	}
 
@@ -175,9 +175,9 @@ class Station {
 	}
 
 	/**
-	 * @return float|null
+	 * @return float
 	 */
-	public function getLongitude(): ?float {
+	public function getLongitude(): float {
 		return $this->longitude;
 	}
 
@@ -191,9 +191,9 @@ class Station {
 	}
 
 	/**
-	 * @return int|null
+	 * @return int
 	 */
-	public function getStatus(): ?int {
+	public function getStatus(): int {
 		return $this->status;
 	}
 
@@ -207,9 +207,9 @@ class Station {
 	}
 
 	/**
-	 * @return float|null
+	 * @return float
 	 */
-	public function getLast(): ?float {
+	public function getLast(): float {
 		return $this->last;
 	}
 

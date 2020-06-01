@@ -12,7 +12,7 @@
     ],
     "homepage": "https://www.hallerbach-it.de",
     "time": "2020-04-01",
-    "version": "0.0.1",
+    "version": "1.0.0",
 
     "require": {
         "php": "~7.3",
@@ -53,8 +53,22 @@
         "symfony/debug-pack": "*",
         "symfony/maker-bundle": "^1.0",
         "symfony/profiler-pack": "*",
-        "symfony/test-pack": "*"
+        "symfony/test-pack": "*",
+
+        "hallerbach-it/symfony-testing": "~1.0",
+        "hallerbach-it/testing": "~2.0"
     },
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "git@hallerbach-it.de:~/symfony-testing.git"
+        },
+        {
+            "type": "vcs",
+            "url": "git@hallerbach-it.de:~/testing.git"
+        }
+    ],
+
     "autoload": {
         "psr-4": {
             "App\\": "src/"

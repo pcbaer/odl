@@ -2,15 +2,15 @@
 declare(strict_types = 1);
 namespace App\Retrieval;
 
-use Symfony\Contracts\HttpClient\Exception\ExceptionInterface;
 use Symfony\Component\HttpClient\HttpClient;
+use Symfony\Contracts\HttpClient\Exception\ExceptionInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 class Fetcher {
 
-	public const BASE_FILE = 'stamm.json';
+	public const URL = 'https://odlinfo.bfs.de/daten/json';
 
-	private const URL = 'https://odlinfo.bfs.de/daten/json';
+	public const BASE_FILE = 'stamm.json';
 
 	/**
 	 * @var HttpClientInterface
@@ -45,6 +45,16 @@ class Fetcher {
 	 */
 	public function getStation(string $id): string {
 		return $this->fetch($id . '.json');
+	}
+
+	/**
+	 * @param HttpClientInterface $client
+	 * @return self
+	 */
+	public function setClient(HttpClientInterface $client): self {
+		$this->client = $client;
+
+		return $this;
 	}
 
 	/**

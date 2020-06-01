@@ -25,11 +25,6 @@ class Parser {
 	/**
 	 * @var int
 	 */
-	private $index = 0;
-
-	/**
-	 * @var int
-	 */
 	private $count = 0;
 
 	/**
@@ -42,15 +37,15 @@ class Parser {
 	}
 
 	/**
-	 * @return Station[]
+	 * @return \Traversable
 	 */
 	public function getStations(): \Traversable {
 		if ($this->count <= 0) {
 			$this->readStations();
 		}
 
-		for ($this->index = 0; $this->index < $this->count; $this->index++) {
-			$data    = $this->stations[$this->index];
+		for ($i = 0; $i < $this->count; $i++) {
+			$data    = $this->stations[$i];
 			$station = $this->stationRepository->findByOdlId($data['kenn']);
 			if (!$station) {
 				$station = new Station();
@@ -115,7 +110,7 @@ class Parser {
 		if ($json) {
 			$stations = json_decode($json, true);
 			if (is_array($stations)) {
-				$this->stations = array_values(($stations));
+				$this->stations = array_values($stations);
 				$this->count    = count($this->stations);
 			}
 		}
