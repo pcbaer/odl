@@ -12,6 +12,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Contracts\HttpClient\Exception\ExceptionInterface;
 
+use App\Entity\Station;
 use App\Repository\StationRepository;
 use App\Retrieval\Fetcher;
 use App\Retrieval\Parser;
@@ -55,6 +56,8 @@ class OdlFetchCommand extends Command {
 
 	/**
 	 * @param Fetcher $fetcher
+	 * @param StationRepository $stationRepository
+	 * @param EntityManagerInterface $entityManager
 	 */
 	public function __construct(Fetcher $fetcher, StationRepository $stationRepository,
 								EntityManagerInterface $entityManager) {
@@ -72,6 +75,7 @@ class OdlFetchCommand extends Command {
 		$this->setHelp('This command connects to the BfS web service and fetches the latest ODL data.');
 		$this->addOption('fetch-only', 'f', InputOption::VALUE_NONE, 'Fetch only, do not import');
 		$this->addOption('import-dir', 'i', InputOption::VALUE_REQUIRED, 'Do not fetch, import given directory');
+		$this->addOption('list', 'l', InputOption::VALUE_NONE, 'Just list all stations in the database');
 	}
 
 	/**
@@ -82,9 +86,16 @@ class OdlFetchCommand extends Command {
 	protected function execute(InputInterface $input, OutputInterface $output): int {
 		$this->io = new SymfonyStyle($input, $output);
 
-		$importDir = $input->getOption('import-dir');
 		$fetchOnly = $input->getOption('fetch-only');
+		$importDir = $input->getOption('import-dir');
+		$list      = $input->getOption('list');
 		try {
+			if ($list) {
+				$this->io->note('Listing ODL stations from database.');
+				return $this->listStations() ? 0 : 1;
+			}
+
+			$this->io->note($this->date() . 'ODL fetch/import started.');
 			$this->init($importDir);
 			if (!$importDir) {
 				$this->fetch();
@@ -92,13 +103,18 @@ class OdlFetchCommand extends Command {
 			if (!$fetchOnly) {
 				$this->import();
 			}
+			if ((bool)$fetchOnly === (bool)$importDir) {
+				$this->io->success($this->date() . 'New data fetched and imported.');
+			} elseif ($fetchOnly) {
+				$this->io->success($this->date() . 'New data fetched.');
+			} else {
+				$this->io->success($this->date() . 'New data imported.');
+			}
+			return 0;
 		} catch (\Exception $e) {
 			$this->io->error($e->getMessage());
 			return 1;
 		}
-
-		$this->io->success('New data fetched and imported.');
-		return 0;
 	}
 
 	/**
@@ -108,6 +124,29 @@ class OdlFetchCommand extends Command {
 		if ($this->io->isDebug()) {
 			$this->io->note($message);
 		}
+	}
+
+	/**
+	 * @return string
+	 */
+	private function date(): string {
+		return '[' . date('H:i') . '] ';
+	}
+
+	/**
+	 * @return bool
+	 */
+	private function listStations(): bool {
+		$stations = $this->stationRepository->findAll();
+		if (empty($stations)) {
+			$this->io->warning('No stations found.');
+			return false;
+		}
+
+		foreach ($stations as $station) {
+			$this->io->writeLn($this->createStationStatus($station));
+		}
+		return true;
 	}
 
 	/**
@@ -186,7 +225,7 @@ class OdlFetchCommand extends Command {
 		$stationKeys = array_keys($stations);
 		$i           = 0;
 		$n           = count($stationKeys);
-		$this->io->note($n . ' stations found.');
+		$this->io->note($this->date() . $n . ' stations found.');
 		foreach ($stationKeys as $key) {
 			$id          = (string)$key;
 			$stationFile = $this->dir . DIRECTORY_SEPARATOR . $id . '.json';
@@ -217,16 +256,19 @@ class OdlFetchCommand extends Command {
 	private function import(): void {
 		$this->parser = new Parser($this->dir, $this->stationRepository);
 		$stations     = $this->importStations();
+		$counts       = [];
 		foreach ($stations as $odlId) {
-			$this->importMeasurements($odlId);
+			$n            = $this->importMeasurements($odlId);
+			$counts[$n][] = $odlId;
 		}
+		$this->printStatistics($counts);
 	}
 
 	/**
 	 * Import station data.
 	 */
 	private function importStations(): array {
-		$this->io->note('Importing stations...');
+		$this->io->note($this->date() . 'Importing stations...');
 		$stations = [];
 
 		foreach ($this->parser->getStations() as $station) {
@@ -234,7 +276,7 @@ class OdlFetchCommand extends Command {
 			if ($station->getId()) {
 				$this->debug('Updating station ' . $odlId . '.');
 			} else {
-				$this->io->note('New station ' . $odlId . ' (' . $station->getCity() . ').');
+				$this->io->note($this->date() . 'New station ' . $odlId . ' (' . $station->getCity() . ').');
 			}
 			$this->entityManager->persist($station);
 			$stations[] = $odlId;
@@ -246,9 +288,10 @@ class OdlFetchCommand extends Command {
 
 	/**
 	 * @param string $odlId
+	 * @return int
 	 * @throws \RuntimeException
 	 */
-	private function importMeasurements(string $odlId): void {
+	private function importMeasurements(string $odlId): int {
 		$station = $this->stationRepository->findByOdlId($odlId);
 		if (!$station) {
 			throw new \RuntimeException('Station ' . $odlId . ' is not persistent.');
@@ -282,9 +325,52 @@ class OdlFetchCommand extends Command {
 			if (!$connection->commit()) {
 				throw new \RuntimeException('Transaction commit failed for measurements of ' . $id . '.');
 			}
-			$this->io->note($count . ' new rows imported for station ' . $odlId . '.');
+			$this->debug($count . ' new rows imported for station ' . $odlId . '.');
 		} catch (DBALException $e) {
 			throw new \RuntimeException($e->getMessage(), $e->getCode(), $e);
 		}
+
+		return $count;
+	}
+
+	/**
+	 * @param array $counts
+	 */
+	private function printStatistics(array $counts): void {
+		krsort($counts, SORT_NUMERIC);
+		$this->io->note($this->date() . 'New rows statistics:');
+		foreach ($counts as $n => $odlIds) {
+			$count = count($odlIds);
+			$this->io->note($n . ' new rows for ' . $count . ' stations.');
+		}
+
+		$emptyOdlIds = $counts[0] ?? [];
+		$count       = count($emptyOdlIds);
+		if ($count > 0) {
+			$this->io->note($count . ' stations without new rows:');
+			foreach ($this->stationRepository->findByOdlIds($emptyOdlIds) as $station) {
+				$this->io->writeln($this->createStationStatus($station));
+			}
+		}
+	}
+
+	/**
+	 * @param Station $station
+	 * @return string
+	 */
+	private function createStationStatus(Station $station): string {
+		$id     = sprintf('%1$4u', $station->getId());
+		$zip    = sprintf('%1$5s', $station->getZip());
+		$odlId  = sprintf('%1$9s', $station->getOdlId());
+		$last   = sprintf('%1$1.3f', $station->getLast());
+		$status = sprintf('%1$3u', $station->getStatus());
+
+		$city = mb_substr($station->getCity(), 0, 30);
+		$l    = mb_strlen($city);
+		if ($l < 30) {
+			$city .= str_pad('', 30 - $l);
+		}
+
+		return '#' . $id . ': ' . $zip . ' ' . $city . ' (' . $odlId . ') Last: ' . $last . ' Status: ' . $status;
 	}
 }

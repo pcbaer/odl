@@ -37,7 +37,9 @@ final class Version20200402170116 extends AbstractMigration {
 				status SMALLINT NOT NULL,
 				last FLOAT NOT NULL,
 				PRIMARY KEY (id),
-				UNIQUE KEY UQ_station_odl_id (odl_id)
+				UNIQUE KEY UQ_station_odl_id (odl_id),
+				KEY IX_station_zip (zip),
+				KEY IX_station_city (city)
 			) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB"
 		);
 	}

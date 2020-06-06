@@ -10,7 +10,6 @@ use App\Entity\Station;
 /**
  * @method Station|null find($id, $lockMode = null, $lockVersion = null)
  * @method Station|null findOneBy(array $criteria, array $orderBy = null)
- * @method Station[] findAll()
  * @method Station[] findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
 class StationRepository extends ServiceEntityRepository {
@@ -23,6 +22,15 @@ class StationRepository extends ServiceEntityRepository {
 	}
 
 	/**
+	 * @return Station[]
+	 */
+	public function findAll(): array {
+		$builder = $this->createQueryBuilder('s');
+		$query   = $builder->orderBy('s.zip')->getQuery();
+		return $query->getResult();
+	}
+
+	/**
 	 * @param string $odlId
 	 * @return Station|null
 	 */
@@ -32,15 +40,13 @@ class StationRepository extends ServiceEntityRepository {
 		return $query->getOneOrNullResult();
 	}
 
-	/*
-	public function findOneBySomeField($value): ?Station
-	{
-		return $this->createQueryBuilder('s')
-			->andWhere('s.exampleField = :val')
-			->setParameter('val', $value)
-			->getQuery()
-			->getOneOrNullResult()
-		;
+	/**
+	 * @param string[] $odlIds
+	 * @return Station[]
+	 */
+	public function findByOdlIds(array $odlIds): array {
+		$builder = $this->createQueryBuilder('s');
+		$query   = $builder->andWhere($builder->expr()->in('s.odlId', $odlIds))->orderBy('s.zip')->getQuery();
+		return $query->getResult();
 	}
-	*/
 }
