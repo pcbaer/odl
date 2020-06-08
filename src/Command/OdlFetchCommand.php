@@ -4,7 +4,9 @@ namespace App\Command;
 
 use Doctrine\DBAL\DBALException;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
+use Doctrine\DBAL\FetchMode;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\Query;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -349,28 +351,46 @@ class OdlFetchCommand extends Command {
 		if ($count > 0) {
 			$this->io->note($count . ' stations without new rows:');
 			foreach ($this->stationRepository->findByOdlIds($emptyOdlIds) as $station) {
-				$this->io->writeln($this->createStationStatus($station));
+				$measurement = $this->fetchLastMeasurement($station);
+				$this->io->writeln($this->createStationStatus($station, $measurement));
 			}
 		}
 	}
 
 	/**
 	 * @param Station $station
+	 * @return array
+	 */
+	private function fetchLastMeasurement(Station $station): array {
+		$connection = $this->entityManager->getConnection();
+		$builder    = $connection->createQueryBuilder();
+		$query      = $builder->select('time, dosage')->from('measurement');
+		$query->where($query->expr()->eq('station_id', '?'))->orderBy('time', 'DESC')->setMaxResults(1);
+		$query->setParameter(1, $station->getId());
+		$result = $query->execute()->fetchAll(FetchMode::ASSOCIATIVE);
+		return $result[0] ?? [];
+	}
+
+	/**
+	 * @param Station $station
 	 * @return string
 	 */
-	private function createStationStatus(Station $station): string {
+	private function createStationStatus(Station $station, array $measurement): string {
 		$id     = sprintf('%1$4u', $station->getId());
 		$zip    = sprintf('%1$5s', $station->getZip());
 		$odlId  = sprintf('%1$9s', $station->getOdlId());
 		$last   = sprintf('%1$1.3f', $station->getLast());
 		$status = sprintf('%1$3u', $station->getStatus());
+		$time   = isset($measurement['time']) ? substr($measurement['time'], 0, 16) : '';
+		$dosage = isset($measurement['dosage']) ? sprintf('%1$1.3f', (float)$measurement['dosage']) : '';
 
 		$city = mb_substr($station->getCity(), 0, 30);
 		$l    = mb_strlen($city);
 		if ($l < 30) {
 			$city .= str_pad('', 30 - $l);
 		}
+		$db = ($time && $dosage) ? ' DB: ' . $time . ' ' . $dosage . ' µSv/h' : '';
 
-		return '#' . $id . ': ' . $zip . ' ' . $city . ' (' . $odlId . ') Last: ' . $last . ' Status: ' . $status;
+		return '#' . $id . ': ' . $zip . ' ' . $city . ' (' . $odlId . ') Last: ' . $last . ' Status: ' . $status . $db;
 	}
 }
