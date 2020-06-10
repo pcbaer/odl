@@ -366,7 +366,7 @@ class OdlFetchCommand extends Command {
 		$builder    = $connection->createQueryBuilder();
 		$query      = $builder->select('time, dosage')->from('measurement');
 		$query->where($query->expr()->eq('station_id', '?'))->orderBy('time', 'DESC')->setMaxResults(1);
-		$query->setParameter(1, $station->getId());
+		$query->setParameter(0, $station->getId());
 		$result = $query->execute()->fetchAll(FetchMode::ASSOCIATIVE);
 		return $result[0] ?? [];
 	}
