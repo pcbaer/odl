@@ -6,7 +6,6 @@ use Doctrine\DBAL\DBALException;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Doctrine\DBAL\FetchMode;
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\Query;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -351,8 +350,7 @@ class OdlFetchCommand extends Command {
 		if ($count > 0) {
 			$this->io->note($count . ' stations without new rows:');
 			foreach ($this->stationRepository->findByOdlIds($emptyOdlIds) as $station) {
-				$measurement = $this->fetchLastMeasurement($station);
-				$this->io->writeln($this->createStationStatus($station, $measurement));
+				$this->io->writeln($this->createStationStatus($station));
 			}
 		}
 	}
@@ -375,7 +373,9 @@ class OdlFetchCommand extends Command {
 	 * @param Station $station
 	 * @return string
 	 */
-	private function createStationStatus(Station $station, array $measurement): string {
+	private function createStationStatus(Station $station): string {
+		$measurement = $this->fetchLastMeasurement($station);
+
 		$id     = sprintf('%1$4u', $station->getId());
 		$zip    = sprintf('%1$5s', $station->getZip());
 		$odlId  = sprintf('%1$9s', $station->getOdlId());

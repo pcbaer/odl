@@ -25,7 +25,7 @@ class Fetcher {
 		$this->client = HttpClient::create([
 			'auth_basic' => [$user, $password],
 			'headers'    => [
-				'Content-Type' => 'application/json'
+				'Accept' => 'application/json'
 			]
 ]		);
 	}
