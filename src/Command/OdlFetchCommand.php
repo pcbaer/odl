@@ -14,26 +14,21 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Contracts\HttpClient\Exception\ExceptionInterface;
 
 use App\Entity\Station;
+use App\Logging\DebugTrait;
 use App\Repository\StationRepository;
 use App\Retrieval\Fetcher;
 use App\Retrieval\Parser;
+use App\Retrieval\StorageTrait;
 
 class OdlFetchCommand extends Command {
+
+	use DebugTrait;
+	use StorageTrait;
 
 	/**
 	 * @var string
 	 */
 	protected static $defaultName = 'odl:fetch';
-
-	/**
-	 * @var SymfonyStyle|null
-	 */
-	private $io;
-
-	/**
-	 * @var string|null
-	 */
-	private $dir;
 
 	/**
 	 * @var Fetcher
@@ -119,15 +114,6 @@ class OdlFetchCommand extends Command {
 	}
 
 	/**
-	 * @param string $message
-	 */
-	protected function debug(string $message): void {
-		if ($this->io->isDebug()) {
-			$this->io->note($message);
-		}
-	}
-
-	/**
 	 * @return string
 	 */
 	private function date(): string {
@@ -160,22 +146,6 @@ class OdlFetchCommand extends Command {
 			$this->checkImportDir($importDir);
 		} else {
 			$this->initTimestampDirectory();
-		}
-	}
-
-	/**
-	 * @throws \RuntimeException
-	 */
-	private function initFetchDirectory(): void {
-		$this->dir = realpath(__DIR__ . '/../../var') . DIRECTORY_SEPARATOR . 'fetch';
-		if (is_dir($this->dir)) {
-			$this->debug('Fetch directory already exists.');
-		} else {
-			@mkdir($this->dir);
-			if (!is_dir($this->dir)) {
-				throw new \RuntimeException('Could not create the fetch directory.');
-			}
-			$this->debug('Fetch directory created.');
 		}
 	}
 
