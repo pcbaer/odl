@@ -1,19 +1,19 @@
 <?php
 declare(strict_types = 1);
 
-namespace DoctrineMigrations;
+namespace App\Migrations;
 
 use Doctrine\DBAL\DBALException;
 use Doctrine\DBAL\Schema\Schema;
 use Doctrine\Migrations\AbstractMigration;
 
-final class Version20200402221511 extends AbstractMigration {
+final class Version20200402170116 extends AbstractMigration {
 
 	/**
 	 * @return string
 	 */
 	public function getDescription(): string {
-		return 'Create the measurement table.';
+		return 'Create the station table.';
 	}
 
 	/**
@@ -23,15 +23,23 @@ final class Version20200402221511 extends AbstractMigration {
 	public function up(Schema $schema): void {
 		$this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'mysql', 'Migration can only be executed safely on \'mysql\'.');
 		$this->addSql("
-			CREATE TABLE measurement (
-				station_id SMALLINT NOT NULL,
-				time DATETIME NOT NULL,
-				dosage float NOT NULL DEFAULT 0.0,
-				rain float NOT NULL DEFAULT 0.0,
-				abnormality float NOT NULL DEFAULT 0.0,
-				PRIMARY KEY (station_id, time),
-				FOREIGN KEY (station_id) REFERENCES station (id) ON DELETE CASCADE ON UPDATE CASCADE,
-				INDEX IX_measurement_time (time)
+			CREATE TABLE station (
+				id SMALLINT AUTO_INCREMENT NOT NULL,
+				odl_id CHAR(9) NOT NULL,
+				zip CHAR(5) NOT NULL,
+				city VARCHAR(255) NOT NULL,
+				kid SMALLINT NOT NULL,
+				created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+				updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+				altitude SMALLINT NOT NULL,
+				latitude FLOAT NOT NULL,
+				longitude FLOAT NOT NULL,
+				status SMALLINT NOT NULL,
+				last FLOAT NOT NULL,
+				PRIMARY KEY (id),
+				UNIQUE KEY UQ_station_odl_id (odl_id),
+				KEY IX_station_zip (zip),
+				KEY IX_station_city (city)
 			) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB"
 		);
 	}
@@ -42,6 +50,6 @@ final class Version20200402221511 extends AbstractMigration {
 	 */
 	public function down(Schema $schema): void {
 		$this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'mysql', 'Migration can only be executed safely on \'mysql\'.');
-		$this->addSql('DROP TABLE measurement');
+		$this->addSql('DROP TABLE station');
 	}
 }
