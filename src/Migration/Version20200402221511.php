@@ -1,7 +1,7 @@
 <?php
 declare(strict_types = 1);
 
-namespace App\Migrations;
+namespace App\Migration;
 
 use Doctrine\DBAL\DBALException;
 use Doctrine\DBAL\Schema\Schema;
