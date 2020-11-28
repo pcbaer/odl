@@ -2,7 +2,6 @@
 declare( strict_types =1 );
 namespace App\Controller;
 
-use Doctrine\DBAL\FetchMode;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
@@ -67,7 +66,7 @@ class ChartController extends AbstractController {
 		$query->select('time AS t', 'dosage AS y')->from('measurement');
 		$query->andWhere('station_id = ' . $this->station->getId());
 		$query->andWhere("time >= '" . $this->time->format('Y-m-d') . "'");
-		return $query->execute()->fetchAll(FetchMode::ASSOCIATIVE);
+		return $query->execute()->fetchAllAssociative();
 	}
 
 	/**
@@ -77,7 +76,7 @@ class ChartController extends AbstractController {
 		$query = $this->entityManager->getConnection()->createQueryBuilder();
 		$query->select('time AS t', 'ROUND(dosage, 3) AS y')->from('gammascout');
 		$query->andWhere("time >= '" . $this->time->format('Y-m-d') . "'");
-		return $query->execute()->fetchAll(FetchMode::ASSOCIATIVE);
+		return $query->execute()->fetchAllAssociative();
 	}
 
 	/**

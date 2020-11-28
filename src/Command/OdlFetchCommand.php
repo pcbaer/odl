@@ -2,9 +2,7 @@
 declare(strict_types = 1);
 namespace App\Command;
 
-use Doctrine\DBAL\DBALException;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
-use Doctrine\DBAL\FetchMode;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -287,7 +285,7 @@ class OdlFetchCommand extends Command {
 				$count++;
 			} catch (UniqueConstraintViolationException $e) {
 				$this->debug($e->getMessage());
-			} catch (DBALException $e) {
+			} catch (\Exception $e) {
 				throw new \RuntimeException($e->getMessage(), $e->getCode(), $e);
 			}
 		}
@@ -297,7 +295,7 @@ class OdlFetchCommand extends Command {
 				throw new \RuntimeException('Transaction commit failed for measurements of ' . $id . '.');
 			}
 			$this->debug($count . ' new rows imported for station ' . $odlId . '.');
-		} catch (DBALException $e) {
+		} catch (\Exception $e) {
 			throw new \RuntimeException($e->getMessage(), $e->getCode(), $e);
 		}
 
@@ -335,7 +333,7 @@ class OdlFetchCommand extends Command {
 		$query      = $builder->select('time, dosage')->from('measurement');
 		$query->where($query->expr()->eq('station_id', '?'))->orderBy('time', 'DESC')->setMaxResults(1);
 		$query->setParameter(0, $station->getId());
-		$result = $query->execute()->fetchAll(FetchMode::ASSOCIATIVE);
+		$result = $query->execute()->fetchAllAssociative();
 		return $result[0] ?? [];
 	}
 
