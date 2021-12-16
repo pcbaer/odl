@@ -52,7 +52,13 @@ class StationData
 		}
 		$query->andWhere('dosage > 0.0');
 		$last = $query->executeQuery()->fetchFirstColumn();
-		return \DateTimeImmutable::createFromFormat('Y-m-d H:i:s', current($last));
+		if (!empty($last)) {
+			$last = $last[0];
+			if ($last) {
+				return \DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $last);
+			}
+		}
+		return null;
 	}
 
 	/**

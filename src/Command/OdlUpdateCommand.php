@@ -83,8 +83,8 @@ class OdlUpdateCommand extends Command
 				if (--$tries <= 0) {
 					throw new \RuntimeException('Too many fetching errors.', 0, $e);
 				}
-				$this->io->warning('Waiting 30 seconds before next try...');
-				sleep(30);
+				$this->io->warning('Waiting 10 seconds before next try...');
+				sleep(10);
 			}
 		}
 	}
