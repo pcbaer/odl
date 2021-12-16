@@ -6,64 +6,72 @@ use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Contracts\HttpClient\Exception\ExceptionInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
-class Fetcher {
+class Fetcher
+{
+	public const BASE_URL = 'https://www.imis.bfs.de/ogc/opendata/ows?service=WFS&version=1.1.0';
 
-	public const URL = 'https://odlinfo.bfs.de/daten/json';
+	public const FEATURE_SITES = [
+		'request'      => 'GetFeature',
+		'typeName'     => 'opendata:odlinfo_sitelist',
+		'outputFormat' => 'application/json'
+	];
 
-	public const BASE_FILE = 'stamm.json';
+	public const FEATURE_MEASUREMENTS = [
+		'request'      => 'GetFeature',
+		'typeName'     => 'opendata:odlinfo_timeseries_odl_1h',
+		'outputFormat' => 'application/json',
+		'viewparams'   => 'kenn:%ODL_ID%',
+		'sortBy'       => 'start_measure',
+		'filter'       => '%FILTER_DATETIME%'
+	];
 
-	/**
-	 * @var HttpClientInterface
-	 */
-	private $client;
+	protected HttpClientInterface $client;
 
-	/**
-	 * @param string $user
-	 * @param string $password
-	 */
-	public function __construct(string $user, string $password) {
-		$this->client = HttpClient::create([
-			'auth_basic' => [$user, $password],
-			'headers'    => [
-				'Accept' => 'application/json'
-			]
-]		);
+	public function __construct() {
+		$this->client = HttpClient::create(['headers' => ['Accept' => 'application/json']]);
 	}
 
 	/**
 	 * @return string
 	 * @throws ExceptionInterface
 	 */
-	public function getBaseFile(): string {
-		return $this->fetch(self::BASE_FILE);
+	public function getSiteList(): string {
+		$url = $this->buildUrl(self::FEATURE_SITES);
+		return $this->fetch($url);
 	}
 
 	/**
-	 * @param string $id
-	 * @return string
 	 * @throws ExceptionInterface
 	 */
-	public function getStation(string $id): string {
-		return $this->fetch($id . '.json');
+	public function getMeasurements(string $id, Filter $filter): string {
+		$parameters = [
+			'%ODL_ID%'          => $id,
+			'%FILTER_DATETIME%' => (string)$filter
+		];
+		$url        = $this->buildUrl(self::FEATURE_MEASUREMENTS, $parameters);
+		return $this->fetch($url);
 	}
 
-	/**
-	 * @param HttpClientInterface $client
-	 * @return self
-	 */
 	public function setClient(HttpClientInterface $client): self {
 		$this->client = $client;
-
 		return $this;
 	}
 
+	protected function buildUrl(array $feature, array $parameters = []): string {
+		$url = self::BASE_URL;
+		foreach ($feature as $param => $value) {
+			foreach ($parameters as $search => $replace) {
+				$value = str_replace($search, $replace, $value);
+			}
+			$url .= '&' . $param . '=' . $value;
+		}
+		return $url;
+	}
+
 	/**
-	 * @param string $fileName
-	 * @return string
 	 * @throws ExceptionInterface
 	 */
-	private function fetch(string $fileName): string {
-		$url      = self::URL . '/' . $fileName;
+	protected function fetch(string $url): string {
 		$response = $this->client->request('GET', $url);
 		return $response->getContent();
 	}

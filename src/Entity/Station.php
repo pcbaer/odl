@@ -7,8 +7,8 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * @ORM\Entity(repositoryClass="App\Repository\StationRepository")
  */
-class Station {
-
+class Station implements \Stringable
+{
 	/**
 	 * @ORM\Id()
 	 * @ORM\GeneratedValue()
@@ -70,6 +70,10 @@ class Station {
 	 * @var float
 	 */
 	private $last = 0.0;
+
+	public function __toString(): string {
+		return $this->city . ' (' . $this->odlId . ')';
+	}
 
 	/**
 	 * @return int
