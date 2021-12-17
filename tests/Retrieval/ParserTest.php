@@ -4,7 +4,7 @@ namespace App\Tests\Retrieval;
 
 use App\Entity\Station;
 use App\Repository\StationRepository;
-use App\Retrieval\Parser;
+use App\Retrieval\Updater;
 use HallerbachIT\Testing\Symfony\EntityManagerTest;
 
 class ParserTest extends EntityManagerTest
@@ -38,10 +38,10 @@ class ParserTest extends EntityManagerTest
 
 	/**
 	 * @test
-	 * @return Parser
+	 * @return Updater
 	 */
-	public function construct(): Parser {
-		$parser = new Parser($this->dir, $this->repository);
+	public function construct(): Updater {
+		$parser = new Updater($this->dir, $this->repository);
 
 		$this->assertNotNull($parser);
 
@@ -51,9 +51,9 @@ class ParserTest extends EntityManagerTest
 	/**
 	 * @test
 	 * @depends construct
-	 * @param Parser $parser
+	 * @param Updater $parser
 	 */
-	public function getStations(Parser $parser): void {
+	public function getStations(Updater $parser): void {
 		$stations = [];
 		foreach($parser->getStations() as $station) {
 			$stations[] = $station;
@@ -66,7 +66,7 @@ class ParserTest extends EntityManagerTest
 		$station = $stations[0];
 		$this->assertSame(1, $station->getId());
 		$this->assertSame('Darmstadt', $station->getCity());
-		$this->assertSame(0.085, $station->getLast());
+		$this->assertSame(0.085, $station->getLastValue());
 
 		$station = $stations[1];
 		$this->assertSame(0, $station->getId());
@@ -78,7 +78,7 @@ class ParserTest extends EntityManagerTest
 		$this->assertSame(52.16, $station->getLatitude());
 		$this->assertSame(14.66, $station->getLongitude());
 		$this->assertSame(1, $station->getStatus());
-		$this->assertSame(0.068, $station->getLast());
+		$this->assertSame(0.068, $station->getLastValue());
 
 		$station = $stations[2];
 		$this->assertSame(0, $station->getId());
@@ -88,9 +88,9 @@ class ParserTest extends EntityManagerTest
 	/**
 	 * @test
 	 * @depends construct
-	 * @param Parser $parser
+	 * @param Updater $parser
 	 */
-	public function getMeaurements(Parser $parser): void {
+	public function getMeaurements(Updater $parser): void {
 		$measurements = $parser->getMeasurements('064110003');
 
 		$this->assertArray($measurements, 24 + 11 + 1, 'array');

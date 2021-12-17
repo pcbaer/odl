@@ -7,218 +7,244 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * @ORM\Entity(repositoryClass="App\Repository\StationRepository")
  */
-class Station {
-
+class Station implements \Stringable
+{
 	/**
 	 * @ORM\Id()
 	 * @ORM\GeneratedValue()
 	 * @ORM\Column(type="smallint")
-	 * @var int
 	 */
-	private $id = 0;
+	protected int $id = 0;
 
 	/**
 	 * @ORM\Column(type="string", length=9)
-	 * @var string
 	 */
-	private $odlId = '';
+	protected string $odlId = '';
+
+	/**
+	 * @ORM\Column(type="string", length=7, name="odl_id_2")
+	 */
+	protected string $odlId2 = '';
 
 	/**
 	 * @ORM\Column(type="string", length=5)
-	 * @var string
 	 */
-	private $zip = '';
+	protected string $zip = '';
 
 	/**
 	 * @ORM\Column(type="string", length=255)
-	 * @var string
 	 */
-	private $city = '';
+	protected string $city = '';
 
 	/**
 	 * @ORM\Column(type="smallint")
-	 * @var int
 	 */
-	private $kid = 0;
+	protected int $kid = 0;
 
 	/**
 	 * @ORM\Column(type="smallint")
-	 * @var int
 	 */
-	private $altitude = 0;
+	protected int $altitude = 0;
 
 	/**
 	 * @ORM\Column(type="float")
-	 * @var float
 	 */
-	private $latitude = 0.0;
+	protected float $latitude = 0.0;
 
 	/**
 	 * @ORM\Column(type="float")
-	 * @var float
 	 */
-	private $longitude = 0.0;
+	protected float $longitude = 0.0;
 
 	/**
 	 * @ORM\Column(type="smallint")
-	 * @var int
 	 */
-	private $status = 0;
+	protected int $status = 0;
+
+	/**
+	 * @ORM\Column(type="string", length=255)
+	 */
+	protected string $statusText = '';
+
+	/**
+	 * @ORM\Column(type="datetime")
+	 */
+	protected ?\DateTime $lastTimestamp = null;
 
 	/**
 	 * @ORM\Column(type="float")
-	 * @var float
 	 */
-	private $last = 0.0;
+	protected float $lastValue = 0.0;
 
 	/**
-	 * @return int
+	 * @ORM\Column(type="string", length=8)
 	 */
+	protected string $unit = '';
+
+	/**
+	 * @ORM\Column(type="string", length=10)
+	 */
+	protected string $duration = '';
+
+	/**
+	 * @ORM\Column(type="boolean")
+	 */
+	protected bool $isValidated = false;
+
+	/**
+	 * @ORM\Column(type="string", length=255)
+	 */
+	protected string $nuclide = '';
+
+	public function __toString(): string {
+		return $this->city . ' (' . $this->odlId . ')';
+	}
+
 	public function getId(): int {
 		return $this->id;
 	}
 
-	/**
-	 * @return string
-	 */
 	public function getOdlId(): string {
 		return $this->odlId;
 	}
 
-	/**
-	 * @param string $odlId
-	 * @return self
-	 */
 	public function setOdlId(string $odlId): self {
 		$this->odlId = $odlId;
 		return $this;
 	}
 
-	/**
-	 * @return string
-	 */
+	public function getOdlId2(): string {
+		return $this->odlId2;
+	}
+
+	public function setOdlId2(string $odlId2): self {
+		$this->odlId2 = $odlId2;
+		return $this;
+	}
+
 	public function getZip(): string {
 		return $this->zip;
 	}
 
-	/**
-	 * @param string $zip
-	 * @return self
-	 */
 	public function setZip(string $zip): self {
 		$this->zip = $zip;
 		return $this;
 	}
 
-	/**
-	 * @return string
-	 */
 	public function getCity(): string {
 		return $this->city;
 	}
 
-	/**
-	 * @param string $city
-	 * @return self
-	 */
 	public function setCity(string $city): self {
 		$this->city = $city;
 		return $this;
 	}
 
-	/**
-	 * @return int
-	 */
 	public function getKid(): int {
 		return $this->kid;
 	}
 
-	/**
-	 * @param int $kid
-	 * @return self
-	 */
 	public function setKid(int $kid): self {
 		$this->kid = $kid;
 		return $this;
 	}
 
-	/**
-	 * @return int
-	 */
 	public function getAltitude(): int {
 		return $this->altitude;
 	}
 
-	/**
-	 * @param int $altitude
-	 * @return self
-	 */
 	public function setAltitude(int $altitude): self {
 		$this->altitude = $altitude;
 		return $this;
 	}
 
-	/**
-	 * @return float
-	 */
 	public function getLatitude(): float {
 		return $this->latitude;
 	}
 
-	/**
-	 * @param float $latitude
-	 * @return self
-	 */
 	public function setLatitude(float $latitude): self {
 		$this->latitude = $latitude;
 		return $this;
 	}
 
-	/**
-	 * @return float
-	 */
 	public function getLongitude(): float {
 		return $this->longitude;
 	}
 
-	/**
-	 * @param float $longitude
-	 * @return self
-	 */
 	public function setLongitude(float $longitude): self {
 		$this->longitude = $longitude;
 		return $this;
 	}
 
-	/**
-	 * @return int
-	 */
 	public function getStatus(): int {
 		return $this->status;
 	}
 
-	/**
-	 * @param int $status
-	 * @return self
-	 */
 	public function setStatus(int $status): self {
 		$this->status = $status;
 		return $this;
 	}
 
-	/**
-	 * @return float
-	 */
-	public function getLast(): float {
-		return $this->last;
+	public function getStatusText(): string {
+		return $this->statusText;
 	}
 
-	/**
-	 * @param float $last
-	 * @return self
-	 */
-	public function setLast(float $last): self {
-		$this->last = $last;
+	public function setStatusText(string $statusText): self {
+		$this->statusText = $statusText;
+		return $this;
+	}
+
+	public function getLastTimestamp(): ?\DateTime {
+		return $this->lastTimestamp;
+	}
+
+	public function setLastTimestamp(\DateTime $dateTime): self {
+		$this->lastTimestamp = $dateTime;
+		return $this;
+	}
+
+	public function getLastValue(): float {
+		return $this->lastValue;
+	}
+
+	public function setLastValue(float $lastValue): self {
+		$this->lastValue = $lastValue;
+		return $this;
+	}
+
+	public function getUnit(): string {
+		return $this->unit;
+	}
+
+	public function setUnit(string $unit): self {
+		$this->unit = $unit;
+		return $this;
+	}
+
+	public function getDuration(): string {
+		return $this->duration;
+	}
+
+	public function setDuration(string $duration): self {
+		$this->duration = $duration;
+		return $this;
+	}
+
+	public function isValidated(): bool {
+		return $this->isValidated;
+	}
+
+	public function setIsValidated(bool $isValidated): self {
+		$this->isValidated = $isValidated;
+		return $this;
+	}
+
+	public function getNuclide(): string {
+		return $this->nuclide;
+	}
+
+	public function setNuclide(string $nuclide): self {
+		$this->nuclide = $nuclide;
 		return $this;
 	}
 }

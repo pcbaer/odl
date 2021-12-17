@@ -11,52 +11,62 @@
         }
     ],
     "homepage": "https://www.hallerbach-it.de",
-    "time": "2020-04-01",
-    "version": "1.0.0",
+    "time": "2021-12-16",
+    "version": "2.0.0",
 
     "require": {
-        "php": "~7.3",
-        "ext-ctype": "*",
-        "ext-iconv": "*",
-        "ext-json": "*",
+        "php": "~8.0",
+        "ext-ctype": "~8.0",
+        "ext-iconv": "~8.0",
+        "ext-json": "~8.0",
 
-        "components/jquery": "~3.5",
+        "components/jquery": "~3.6",
+        "doctrine/annotations": "~1.13",
+        "doctrine/doctrine-bundle": "~2.5",
+        "doctrine/doctrine-migrations-bundle": "~3.2",
+        "doctrine/orm": "~2.10",
         "moment/moment": "~2.29",
         "nnnick/chartjs": "~2.9",
-        "sensio/framework-extra-bundle": "~5.6",
+        "phpdocumentor/reflection-docblock": "~5.3",
+        "sensio/framework-extra-bundle": "~6.2",
         "symfony/apache-pack": "~1.0",
-        "symfony/asset": "5.1.*",
-        "symfony/console": "5.1.*",
-        "symfony/dotenv": "5.1.*",
-        "symfony/expression-language": "5.1.*",
-        "symfony/flex": "~1.10",
-        "symfony/form": "5.1.*",
-        "symfony/framework-bundle": "5.1.*",
-        "symfony/http-client": "5.1.*",
-        "symfony/intl": "5.1.*",
-        "symfony/mailer": "5.1.*",
-        "symfony/monolog-bundle": "~3.6",
-        "symfony/notifier": "5.1.*",
-        "symfony/orm-pack": "~2.0",
-        "symfony/process": "5.1.*",
-        "symfony/security-bundle": "5.1.*",
-        "symfony/serializer-pack": "~1.0",
-        "symfony/string": "5.1.*",
-        "symfony/translation": "5.1.*",
-        "symfony/twig-pack": "~1.0",
-        "symfony/validator": "5.1.*",
-        "symfony/web-link": "5.1.*",
-        "symfony/yaml": "5.1.*",
-        "twbs/bootstrap": "~4.5"
+        "symfony/asset": "~5.4",
+        "symfony/console": "~5.4",
+        "symfony/dotenv": "~5.4",
+        "symfony/expression-language": "~5.4",
+        "symfony/flex": "~1.17",
+        "symfony/form": "~5.4",
+        "symfony/framework-bundle": "~5.4",
+        "symfony/http-client": "~5.4",
+        "symfony/intl": "~5.4",
+        "symfony/mailer": "~5.4",
+        "symfony/monolog-bundle": "~3.7",
+        "symfony/notifier": "~5.4",
+        "symfony/process": "~5.4",
+        "symfony/property-access": "~5.4",
+        "symfony/property-info": "~5.4",
+        "symfony/proxy-manager-bridge": "~5.4",
+        "symfony/security-bundle": "~5.4",
+        "symfony/serializer": "~5.4",
+        "symfony/string": "~5.4",
+        "symfony/translation": "~5.4",
+        "symfony/twig-bundle": "~5.4",
+        "symfony/validator": "~5.4",
+        "symfony/web-link": "~5.4",
+        "symfony/yaml": "~5.4",
+        "twbs/bootstrap": "~4.6",
+        "twig/extra-bundle": "~3.3",
+        "twig/twig": "~3.3"
     },
     "require-dev": {
-        "symfony/debug-pack": "~1.0",
-        "symfony/maker-bundle": "~1.24",
-        "symfony/profiler-pack": "~1.0",
-        "symfony/test-pack": "~1.0",
-
-        "hallerbach-it/symfony-testing": "~1.0",
-        "hallerbach-it/testing": "~2.0"
+        "phpunit/phpunit": "~9.5",
+        "symfony/browser-kit": "~5.4",
+        "symfony/css-selector": "~5.4",
+        "symfony/debug-bundle": "~5.4",
+        "symfony/maker-bundle": "~1.36",
+        "symfony/phpunit-bridge": "~5.4",
+        "symfony/stopwatch": "~5.4",
+        "symfony/web-profiler-bundle": "~5.4"
     },
     "repositories": [
         {
@@ -84,21 +94,9 @@
         "preferred-install": {
             "*": "dist"
         },
-        "sort-packages": true,
-        "platform": {
-            "php": "7.3"
-        }
+        "sort-packages": true
     },
 
-    "replace": {
-        "paragonie/random_compat": "2.*",
-        "symfony/polyfill-ctype": "*",
-        "symfony/polyfill-iconv": "*",
-        "symfony/polyfill-php72": "*",
-        "symfony/polyfill-php71": "*",
-        "symfony/polyfill-php70": "*",
-        "symfony/polyfill-php56": "*"
-    },
     "scripts": {
         "auto-scripts": {
             "cache:clear": "symfony-cmd",
@@ -119,7 +117,7 @@
     "extra": {
         "symfony": {
             "allow-contrib": false,
-            "require": "5.1.*"
+            "require": "~5.4"
         }
     }
 }

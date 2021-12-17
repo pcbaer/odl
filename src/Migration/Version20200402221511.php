@@ -1,27 +1,17 @@
 <?php
 declare(strict_types = 1);
-
 namespace App\Migration;
 
-use Doctrine\DBAL\DBALException;
 use Doctrine\DBAL\Schema\Schema;
 use Doctrine\Migrations\AbstractMigration;
 
-final class Version20200402221511 extends AbstractMigration {
-
-	/**
-	 * @return string
-	 */
+final class Version20200402221511 extends AbstractMigration
+{
 	public function getDescription(): string {
 		return 'Create the measurement table.';
 	}
 
-	/**
-	 * @param Schema $schema
-	 * @throws DBALException
-	 */
 	public function up(Schema $schema): void {
-		$this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'mysql', 'Migration can only be executed safely on \'mysql\'.');
 		$this->addSql("
 			CREATE TABLE measurement (
 				station_id SMALLINT NOT NULL,
@@ -36,12 +26,7 @@ final class Version20200402221511 extends AbstractMigration {
 		);
 	}
 
-	/**
-	 * @param Schema $schema
-	 * @throws DBALException
-	 */
 	public function down(Schema $schema): void {
-		$this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'mysql', 'Migration can only be executed safely on \'mysql\'.');
 		$this->addSql('DROP TABLE measurement');
 	}
 }
