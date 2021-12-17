@@ -54,7 +54,7 @@ class StationRepositoryTest extends EntityManagerTest
 		$this->assertSame(49.84, $station->getLatitude());
 		$this->assertSame(8.59, $station->getLongitude());
 		$this->assertSame(1, $station->getStatus());
-		$this->assertSame(0.086, $station->getLast());
+		$this->assertSame(0.086, $station->getLastValue());
 	}
 
 	/**

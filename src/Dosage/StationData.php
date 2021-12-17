@@ -99,4 +99,13 @@ class StationData
 			$connection->rollBack();
 		}
 	}
+
+	public function getGammascoutData(): array {
+		$query = $this->entityManager->getConnection()->createQueryBuilder();
+		$query->select('time AS t', 'ROUND(dosage, 3) AS y')->from('gammascout');
+		if ($this->from) {
+			$query->andWhere("time >= '" . $this->from->format('Y-m-d') . "'");
+		}
+		return $query->executeQuery()->fetchAllAssociative();
+	}
 }

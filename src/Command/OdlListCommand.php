@@ -62,8 +62,9 @@ class OdlListCommand extends Command
 		$id     = sprintf('%1$4u', $station->getId());
 		$zip    = sprintf('%1$5s', $station->getZip());
 		$odlId  = sprintf('%1$9s', $station->getOdlId());
-		$last   = sprintf('%1$1.3f', $station->getLast());
+		$last   = sprintf('%1$1.3f', $station->getLastValue());
 		$status = sprintf('%1$3u', $station->getStatus());
+		$text   = $station->getStatusText();
 		$time   = isset($measurement['time']) ? substr($measurement['time'], 0, 16) : '';
 		$dosage = isset($measurement['dosage']) ? sprintf('%1$1.3f', (float)$measurement['dosage']) : '';
 
@@ -74,6 +75,6 @@ class OdlListCommand extends Command
 		}
 		$db = ($time && $dosage) ? ' DB: ' . $time . ' ' . $dosage . ' µSv/h' : '';
 
-		return '#' . $id . ': ' . $zip . ' ' . $city . ' (' . $odlId . ') Last: ' . $last . ' Status: ' . $status . $db;
+		return '#' . $id . ': ' . $zip . ' ' . $city . ' (' . $odlId . ') Last: ' . $last . ' Status: ' . $status . ' ' . $text . $db;
 	}
 }

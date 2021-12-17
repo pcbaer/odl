@@ -73,6 +73,7 @@ class OdlUpdateCommand extends Command
 		$i     = 0;
 		$n     = count($stations);
 		$this->io->note($this->date() . $n . ' stations found.');
+
 		foreach ($stations as $station) {
 			sleep(2);
 			$this->debug('Fetching ' . $station . ' (' . ++$i . '/' . $n . ')...');

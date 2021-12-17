@@ -203,7 +203,7 @@ class StationTest extends BaseTest {
 	 * @param Station $station
 	 */
 	public function getLast(Station $station): void {
-		$this->assertSame(0.0, $station->getLast());
+		$this->assertSame(0.0, $station->getLastValue());
 	}
 
 	/**
@@ -214,7 +214,7 @@ class StationTest extends BaseTest {
 	public function setLast(Station $station): void {
 		$last = 25.99;
 
-		$this->assertSame($station, $station->setLast($last));
-		$this->assertSame($last, $station->getLast());
+		$this->assertSame($station, $station->setLastValue($last));
+		$this->assertSame($last, $station->getLastValue());
 	}
 }

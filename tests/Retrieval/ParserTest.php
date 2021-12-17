@@ -66,7 +66,7 @@ class ParserTest extends EntityManagerTest
 		$station = $stations[0];
 		$this->assertSame(1, $station->getId());
 		$this->assertSame('Darmstadt', $station->getCity());
-		$this->assertSame(0.085, $station->getLast());
+		$this->assertSame(0.085, $station->getLastValue());
 
 		$station = $stations[1];
 		$this->assertSame(0, $station->getId());
@@ -78,7 +78,7 @@ class ParserTest extends EntityManagerTest
 		$this->assertSame(52.16, $station->getLatitude());
 		$this->assertSame(14.66, $station->getLongitude());
 		$this->assertSame(1, $station->getStatus());
-		$this->assertSame(0.068, $station->getLast());
+		$this->assertSame(0.068, $station->getLastValue());
 
 		$station = $stations[2];
 		$this->assertSame(0, $station->getId());

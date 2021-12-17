@@ -37,24 +37,38 @@ class Updater
 			$station = $this->stationRepository->findByOdlId($odlId);
 			if (!$station) {
 				$station = new Station();
-				$station->setOdlId($odlId)->setLast(0.0);
+				$station->setOdlId($odlId);
 			}
 
+			$station->setOdlId2($this->getValue($data, 'id'));
 			$station->setZip($this->getValue($data, 'plz'));
 			$station->setCity($this->getValue($data, 'name'));
 			$station->setStatus($this->getValue($data, 'site_status'));
+			$station->setStatusText($this->getValue($data, 'site_status_text'));
 			$station->setKid($this->getValue($data, 'kid'));
 			$station->setAltitude($this->getValue($data, 'height_above_sea'));
 			$station->setLongitude($this->getValue($data, 'longitude'));
 			$station->setLatitude($this->getValue($data, 'latitude'));
+			$timestamp = $this->getValue($data, 'start_measure');
+			if (is_string($timestamp)) {
+				$dateTime = $this->getDateTime($timestamp);
+				if ($dateTime) {
+					$station->setLastTimestamp($dateTime);
+				}
+			}
 			$last = $this->getValue($data, 'value');
 			if (is_float($last) && $last > 0.0) {
-				$station->setLast($last);
+				$station->setLastValue($last);
 			}
+			$station->setUnit($this->getValue($data, 'unit'));
+			$station->setIsValidated((bool)$this->getValue($data, 'validated'));
+			$station->setNuclide($this->getValue($data, 'nuclide'));
+			$station->setDuration($this->getValue($data, 'duration'));
 
 			$this->stations[] = $station;
 			$this->entityManager->persist($station);
 		}
+		$this->entityManager->flush();;
 	}
 
 	/**
@@ -81,9 +95,11 @@ class Updater
 			$this->validate($values, 'duration', '1h');
 			$time  = $this->getValue($values, 'start_measure');
 			$value = $this->getValue($values, 'value');
-			if (is_string($time) && strlen($time) === 20 && is_float($value) && $value > 0.0) {
-				$timestamp                = substr($time, 0, 10) . ' ' . substr($time, 11, 5) . ':00';
-				$measurements[$timestamp] = $value;
+			if (is_string($time) && is_float($value) && $value > 0.0) {
+				$timestamp = $this->getDateTime($time);
+				if ($timestamp) {
+					$measurements[$timestamp->format('Y-m-d H:i:s')] = $value;
+				}
 			}
 		}
 
@@ -145,5 +161,13 @@ class Updater
 			throw new \RuntimeException();
 		}
 		return $data[$key];
+	}
+
+	protected function getDateTime(string $timestamp): ?\DateTime {
+		if (strlen($timestamp) === 20) {
+			$dateTime = substr($timestamp, 0, 10) . ' ' . substr($timestamp, 11, 5) . ':00';
+			return \DateTime::createFromFormat('Y-m-d H:i:s', $dateTime);
+		}
+		return null;
 	}
 }
