@@ -19,25 +19,7 @@ function odlChart(id) {
     let chart = new Chart(context, {
         type: 'line',
         data: {
-            datasets: [{
-                label: '',
-                pointBorderColor: config.css('color'),
-                pointBackgroundColor: config.css('color'),
-                backgroundColor: config.css('background-color'),
-                borderColor: config.css('background-color'),
-                pointHitRadius: parseInt(config.css('height')),
-                spanGaps: true,
-                data: []
-            }, {
-                label: 'Hallerbach IT',
-                pointBorderColor: config.css('color'),
-                pointBackgroundColor: config.css('color'),
-                backgroundColor: '#80ff80',
-                borderColor: '#80ff80',
-                pointHitRadius: parseInt(config.css('height')),
-                spanGaps: true,
-                data: []
-            }]
+            datasets: [],
         },
         options: {
             scales: {
@@ -67,6 +49,17 @@ function odlChart(id) {
         }
     });
 
+    let hallerbach = {
+        label: 'Hallerbach IT',
+        pointBorderColor: config.css('color'),
+        pointBackgroundColor: config.css('color'),
+        backgroundColor: null,
+        borderColor: null,
+        pointHitRadius: parseInt(config.css('height')),
+        spanGaps: true,
+        data: null
+    };
+
     let xhr = new XMLHttpRequest();
     xhr.open('GET', 'data');
     xhr.responseType = 'json';
@@ -74,9 +67,24 @@ function odlChart(id) {
 
     xhr.onload = function() {
         let data = xhr.response.data;
-        chart.data.datasets[0].data = xhr.response.data;
-        chart.data.datasets[0].label = xhr.response.label;
-        chart.data.datasets[1].data = xhr.response.gammascout;
+        const n = xhr.response.data.length;
+        for (let i = 0; i < n; i++) {
+            let dataset = {
+                label: xhr.response.labels[i],
+                pointBorderColor: config.css('color'),
+                pointBackgroundColor: config.css('color'),
+                backgroundColor: xhr.response.colors[i],
+                borderColor: xhr.response.colors[i],
+                pointHitRadius: parseInt(config.css('height')),
+                spanGaps: true,
+                data: data[i]
+            };
+            chart.data.datasets.push(dataset);
+        }
+        hallerbach.backgroundColor = xhr.response.colors[n];
+        hallerbach.borderColor = xhr.response.colors[n];
+        hallerbach.data = xhr.response.gammascout;
+        chart.data.datasets.push(hallerbach);
         chart.update();
     };
 }

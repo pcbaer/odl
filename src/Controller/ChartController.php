@@ -3,32 +3,39 @@ declare(strict_types = 1);
 namespace App\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\DependencyInjection\ParameterBag\ContainerBagInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 use App\Dosage\StationData;
-use App\Entity\Station;
 use App\Repository\StationRepository;
 
-class ChartController extends AbstractController {
+class ChartController extends AbstractController
+{
+	protected array $stations = [];
 
-	private const STATION = '053820081';
-
-	private const DAYS = 10;
-
-	protected Station $station;
+	protected array $colors = [];
 
 	protected \DateTimeInterface $from;
 
 	/**
 	 * @throws \Exception
 	 */
-	public function __construct(StationRepository $stationRepository, protected StationData $stationData) {
-		$this->station = $stationRepository->findByOdlId(self::STATION);
+	public function __construct(ContainerBagInterface $config, StationRepository $stationRepository,
+								protected StationData $stationData) {
+		foreach (explode(',', $config->get('odl.chart.stations')) as $city) {
+			$this->stations[] = $stationRepository->findOneBy(['city' => trim($city)]);
+		}
+		foreach (explode(',', $config->get('odl.chart.colors')) as $color) {
+			$this->colors[] = '#' . $color;
+		}
+		if (count($this->colors) <= count($this->stations)) {
+			throw new \RuntimeException('You must define at least ' . (count($this->stations) + 1) . ' colors.');
+		}
 		$this->from = new \DateTime();
-		$this->from->sub(new \DateInterval('P' . self::DAYS . 'D'));
-		$this->stationData->setStation($this->station)->setFrom($this->from);
+		$this->from->sub(new \DateInterval('P' . (int)$config->get('odl.chart.days') . 'D'));
+		$this->stationData->setFrom($this->from);
 	}
 
 	/**
@@ -43,10 +50,17 @@ class ChartController extends AbstractController {
 	 * @throws \Doctrine\DBAL\Exception
 	 */
 	public function data(): JsonResponse {
+		$data   = [];
+		$labels = [];
+		foreach ($this->stations as $station) {
+			$data[]   = $this->stationData->setStation($station)->fetch();
+			$labels[] = $station->getZip() . ' ' . $station->getCity();
+		}
 		return $this->json([
-			'data'       => $this->stationData->fetch(),
+			'data'       => $data,
 			'gammascout' => $this->stationData->getGammascoutData(),
-			'label'      => $this->station->getZip() . ' ' . $this->station->getCity()
+			'labels'     => $labels,
+			'colors'     => $this->colors
 		]);
 	}
 }
