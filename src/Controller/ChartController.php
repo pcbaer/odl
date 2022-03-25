@@ -2,6 +2,7 @@
 declare(strict_types = 1);
 namespace App\Controller;
 
+use App\Configuration\Color;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\DependencyInjection\ParameterBag\ContainerBagInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -27,8 +28,9 @@ class ChartController extends AbstractController
 		foreach (explode(',', $config->get('odl.chart.stations')) as $city) {
 			$this->stations[] = $stationRepository->findOneBy(['city' => trim($city)]);
 		}
-		foreach (explode(',', $config->get('odl.chart.colors')) as $color) {
-			$this->colors[] = '#' . $color;
+		foreach (explode(',', $config->get('odl.chart.colors')) as $name) {
+			$color          = new Color($name);
+			$this->colors[] = (string)$color;
 		}
 		if (count($this->colors) <= count($this->stations)) {
 			throw new \RuntimeException('You must define at least ' . (count($this->stations) + 1) . ' colors.');
