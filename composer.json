@@ -19,7 +19,6 @@
         "ext-ctype": "~8.0",
         "ext-iconv": "~8.0",
         "ext-json": "~8.0",
-
         "components/jquery": "~3.6",
         "doctrine/annotations": "~1.13",
         "doctrine/doctrine-bundle": "~2.7",
@@ -46,6 +45,7 @@
         "symfony/property-access": "~6.1",
         "symfony/property-info": "~6.1",
         "symfony/proxy-manager-bridge": "~6.1",
+        "symfony/runtime": "~6.1",
         "symfony/security-bundle": "~6.1",
         "symfony/serializer": "~6.1",
         "symfony/string": "~6.1",
@@ -98,7 +98,8 @@
         "allow-plugins": {
             "composer/installers": true,
             "oomphinc/composer-installers-extender": true,
-            "symfony/flex": true
+            "symfony/flex": true,
+            "symfony/runtime": true
         }
     },
 
