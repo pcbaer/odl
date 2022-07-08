@@ -2,6 +2,7 @@
 declare(strict_types = 1);
 namespace App\Command;
 
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -12,14 +13,10 @@ use App\Logging\DebugTrait;
 use App\Repository\StationRepository;
 use App\Retrieval\Updater;
 
+#[AsCommand('odl:update', 'Import a bunch of ODL data.')]
 class OdlUpdateCommand extends Command
 {
 	use DebugTrait;
-
-	/**
-	 * @var string
-	 */
-	protected static $defaultName = 'odl:update';
 
 	public function __construct(protected Updater $updater, protected StationData $stationData,
 		                        protected StationRepository $stationRepository) {
@@ -30,8 +27,7 @@ class OdlUpdateCommand extends Command
 	 * Set command configuration.
 	 */
 	protected function configure(): void {
-		$this->setDescription('Import a bunch of ODL data.');
-		$this->setHelp('This command connects to the BfS web service and fetches the latest ODL data for a bunch of stations.');
++		$this->setHelp('This command connects to the BfS web service and fetches the latest ODL data for a bunch of stations.');
 	}
 
 	/**

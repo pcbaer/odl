@@ -2,6 +2,7 @@
 declare(strict_types = 1);
 namespace App\Command;
 
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -12,14 +13,10 @@ use App\Entity\Station;
 use App\Logging\DebugTrait;
 use App\Repository\StationRepository;
 
+#[AsCommand('odl:list', 'List ODL stations.')]
 class OdlListCommand extends Command
 {
 	use DebugTrait;
-
-	/**
-	 * @var string
-	 */
-	protected static $defaultName = 'odl:list';
 
 	public function __construct(protected StationRepository $stationRepository, protected StationData $stationData) {
 		parent::__construct();
@@ -29,7 +26,6 @@ class OdlListCommand extends Command
 	 * Set command configuration.
 	 */
 	protected function configure(): void {
-		$this->setDescription('List ODL stations.');
 		$this->setHelp('This command lists all stations in the database.');
 	}
 
