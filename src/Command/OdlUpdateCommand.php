@@ -27,7 +27,7 @@ class OdlUpdateCommand extends Command
 	 * Set command configuration.
 	 */
 	protected function configure(): void {
-+		$this->setHelp('This command connects to the BfS web service and fetches the latest ODL data for a bunch of stations.');
+		$this->setHelp('This command connects to the BfS web service and fetches the latest ODL data for a bunch of stations.');
 	}
 
 	/**
