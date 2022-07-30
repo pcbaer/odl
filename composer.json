@@ -11,14 +11,14 @@
         }
     ],
     "homepage": "https://www.hallerbach-it.de",
-    "time": "2022-07-08",
-    "version": "2.2.0",
+    "time": "2022-07-30",
+    "version": "2.2.1",
 
     "require": {
-        "php": "~8.0",
-        "ext-ctype": "~8.0",
-        "ext-iconv": "~8.0",
-        "ext-json": "~8.0",
+        "php": "~8.1",
+        "ext-ctype": "~8.1",
+        "ext-iconv": "~8.1",
+        "ext-json": "~8.1",
         "components/jquery": "~3.6",
         "doctrine/annotations": "~1.13",
         "doctrine/doctrine-bundle": "~2.7",
@@ -68,16 +68,6 @@
         "symfony/stopwatch": "~6.1",
         "symfony/web-profiler-bundle": "~6.1"
     },
-    "repositories": [
-        {
-            "type": "vcs",
-            "url": "git@hallerbach-it.de:~/symfony-testing.git"
-        },
-        {
-            "type": "vcs",
-            "url": "git@hallerbach-it.de:~/testing.git"
-        }
-    ],
 
     "autoload": {
         "psr-4": {
