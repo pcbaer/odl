@@ -8,6 +8,7 @@ parameters:
     odl.chart.days: '%env(ODL_CHART_DAYS)%'
     odl.chart.colors: '%env(ODL_CHART_COLORS)%'
     odl.chart.own: '%env(ODL_CHART_OWN)%'
+    odl.chart.own.label: '%env(ODL_CHART_OWN_LABEL)%'
 
 services:
     # default configuration for services in *this* file

@@ -18,7 +18,9 @@ class ChartController extends AbstractController
 
 	protected array $colors = [];
 
-	protected int $own = 0;
+	protected int $own;
+
+	protected string $ownLabel;
 
 	protected \DateTimeInterface $from;
 
@@ -27,7 +29,9 @@ class ChartController extends AbstractController
 	 */
 	public function __construct(ContainerBagInterface $config, StationRepository $stationRepository,
 								protected StationData $stationData) {
-		$this->own = (int)$config->get('odl.chart.own');
+		$this->own      = (int)$config->get('odl.chart.own');
+		$this->ownLabel = $config->get('odl.chart.own.label');
+
 		foreach (explode(',', $config->get('odl.chart.stations')) as $city) {
 			$this->stations[] = $stationRepository->findOneBy(['city' => trim($city)]);
 		}
@@ -38,6 +42,7 @@ class ChartController extends AbstractController
 		if (count($this->colors) <= count($this->stations)) {
 			throw new \RuntimeException('You must define at least ' . (count($this->stations) + 1) . ' colors.');
 		}
+
 		$this->from = new \DateTime();
 		$this->from->sub(new \DateInterval('P' . (int)$config->get('odl.chart.days') . 'D'));
 		$this->stationData->setFrom($this->from);
@@ -64,6 +69,7 @@ class ChartController extends AbstractController
 		return $this->json([
 			'data'       => $data,
 			'own'        => $this->own,
+			'ownLabel'   => $this->ownLabel,
 			'gammascout' => $this->stationData->getGammascoutData(),
 			'labels'     => $labels,
 			'colors'     => $this->colors
