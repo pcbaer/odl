@@ -18,6 +18,8 @@ class ChartController extends AbstractController
 
 	protected array $colors = [];
 
+	protected int $own = 0;
+
 	protected \DateTimeInterface $from;
 
 	/**
@@ -25,6 +27,7 @@ class ChartController extends AbstractController
 	 */
 	public function __construct(ContainerBagInterface $config, StationRepository $stationRepository,
 								protected StationData $stationData) {
+		$this->own = (int)$config->get('odl.chart.own');
 		foreach (explode(',', $config->get('odl.chart.stations')) as $city) {
 			$this->stations[] = $stationRepository->findOneBy(['city' => trim($city)]);
 		}
@@ -60,6 +63,7 @@ class ChartController extends AbstractController
 		}
 		return $this->json([
 			'data'       => $data,
+			'own'        => $this->own,
 			'gammascout' => $this->stationData->getGammascoutData(),
 			'labels'     => $labels,
 			'colors'     => $this->colors

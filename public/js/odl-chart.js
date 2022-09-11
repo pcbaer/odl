@@ -49,42 +49,30 @@ function odlChart(id) {
         }
     });
 
-    let hallerbach = {
-        label: 'Hallerbach IT',
-        pointBorderColor: config.css('color'),
-        pointBackgroundColor: config.css('color'),
-        backgroundColor: null,
-        borderColor: null,
-        pointHitRadius: parseInt(config.css('height')),
-        spanGaps: true,
-        data: null
-    };
-
     let xhr = new XMLHttpRequest();
     xhr.open('GET', 'data');
     xhr.responseType = 'json';
     xhr.send();
 
     xhr.onload = function() {
-        let data = xhr.response.data;
-        const n = xhr.response.data.length;
+        let data  = xhr.response.data;
+        const own = xhr.response.own;
+        const n   = xhr.response.data.length;
         for (let i = 0; i < n; i++) {
-            let dataset = {
-                label: xhr.response.labels[i],
+            let currentLabel = i === own ? 'Hallerbach IT' : xhr.response.labels[i];
+            let currentData  = i === own ? xhr.response.gammascout : data[i];
+            let dataset      = {
+                label: currentLabel,
                 pointBorderColor: config.css('color'),
                 pointBackgroundColor: config.css('color'),
                 backgroundColor: xhr.response.colors[i],
                 borderColor: xhr.response.colors[i],
                 pointHitRadius: parseInt(config.css('height')),
                 spanGaps: true,
-                data: data[i]
+                data: currentData
             };
             chart.data.datasets.push(dataset);
         }
-        hallerbach.backgroundColor = xhr.response.colors[n];
-        hallerbach.borderColor = xhr.response.colors[n];
-        hallerbach.data = xhr.response.gammascout;
-        chart.data.datasets.push(hallerbach);
         chart.update();
     };
 }
