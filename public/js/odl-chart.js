@@ -1,4 +1,4 @@
-$(function () {
+document.addEventListener('readystatechange', () => {
     moment.locale('de');
     odlChart('odl-chart');
 });
@@ -7,14 +7,14 @@ $(function () {
  * @param id
  */
 function odlChart(id) {
-    let element = $('#' + id);
-    let config = element.find('span');
-    let canvas = element.find('canvas')[0];
+    const element = document.getElementById(id);
+    const config = window.getComputedStyle(element.getElementsByTagName('span')[0]);
+    const canvas = element.getElementsByTagName('canvas')[0];
     let context = canvas.getContext('2d');
 
-    Chart.defaults.global.defaultFontFamily = config.css('font-family');
+    Chart.defaults.global.defaultFontFamily = config.getPropertyValue('font-family');
     Chart.defaults.global.elements.point.pointStyle = 'triangle';
-    Chart.defaults.global.elements.point.radius = parseInt(config.css('width'));
+    Chart.defaults.global.elements.point.radius = parseInt(config.getPropertyValue('width'));
 
     let chart = new Chart(context, {
         type: 'line',
@@ -32,7 +32,7 @@ function odlChart(id) {
                         },
                         tooltipFormat: 'DD.MM.YYYY HH:00',
                         unit: 'hour',
-                        stepSize: parseInt(config.css('line-height'))
+                        stepSize: parseInt(config.getPropertyValue('line-height'))
                     }
                 }],
                 yAxes: [{
@@ -74,11 +74,11 @@ function odlChart(id) {
             c++;
             dataset = {
                 label: currentLabel,
-                pointBorderColor: config.css('color'),
-                pointBackgroundColor: config.css('color'),
+                pointBorderColor: config.getPropertyValue('color'),
+                pointBackgroundColor: config.getPropertyValue('color'),
                 backgroundColor: currentColor,
                 borderColor: currentColor,
-                pointHitRadius: parseInt(config.css('height')),
+                pointHitRadius: parseInt(config.getPropertyValue('height')),
                 spanGaps: true,
                 data: currentData
             };

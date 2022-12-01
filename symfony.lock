@@ -1,7 +1,4 @@
 {
-    "components/jquery": {
-        "version": "3.4.1"
-    },
     "composer/installers": {
         "version": "v2.1.0"
     },
@@ -81,9 +78,6 @@
     "doctrine/sql-formatter": {
         "version": "1.1.1"
     },
-    "egulias/email-validator": {
-        "version": "2.1.17"
-    },
     "friendsofphp/proxy-manager-lts": {
         "version": "v1.0.7"
     },
@@ -162,9 +156,6 @@
         "version": "1.0.0"
     },
     "psr/event-dispatcher": {
-        "version": "1.0.0"
-    },
-    "psr/link": {
         "version": "1.0.0"
     },
     "psr/log": {
@@ -296,9 +287,6 @@
     "symfony/event-dispatcher-contracts": {
         "version": "v2.0.1"
     },
-    "symfony/expression-language": {
-        "version": "v5.0.7"
-    },
     "symfony/filesystem": {
         "version": "v5.0.7"
     },
@@ -316,9 +304,6 @@
         "files": [
             ".env"
         ]
-    },
-    "symfony/form": {
-        "version": "v5.0.7"
     },
     "symfony/framework-bundle": {
         "version": "6.2",
@@ -351,21 +336,6 @@
     "symfony/http-kernel": {
         "version": "v5.0.7"
     },
-    "symfony/intl": {
-        "version": "v5.0.7"
-    },
-    "symfony/mailer": {
-        "version": "6.1",
-        "recipe": {
-            "repo": "github.com/symfony/recipes",
-            "branch": "main",
-            "version": "4.3",
-            "ref": "97a61eabb351d7f6cb7702039bcfe07fe9d7e03c"
-        },
-        "files": [
-            "config/packages/mailer.yaml"
-        ]
-    },
     "symfony/maker-bundle": {
         "version": "1.0",
         "recipe": {
@@ -374,9 +344,6 @@
             "version": "1.0",
             "ref": "fadbfe33303a76e25cb63401050439aa9b1a9c7f"
         }
-    },
-    "symfony/mime": {
-        "version": "v5.0.7"
     },
     "symfony/monolog-bridge": {
         "version": "v5.0.7"
@@ -392,21 +359,6 @@
         "files": [
             "config/packages/monolog.yaml"
         ]
-    },
-    "symfony/notifier": {
-        "version": "5.0",
-        "recipe": {
-            "repo": "github.com/symfony/recipes",
-            "branch": "master",
-            "version": "5.0",
-            "ref": "c31585e252b32fe0e1f30b1f256af553f4a06eb9"
-        },
-        "files": [
-            "config/packages/notifier.yaml"
-        ]
-    },
-    "symfony/options-resolver": {
-        "version": "v5.0.7"
     },
     "symfony/phpunit-bridge": {
         "version": "6.1",
@@ -429,12 +381,6 @@
     "symfony/polyfill-intl-grapheme": {
         "version": "v1.15.0"
     },
-    "symfony/polyfill-intl-icu": {
-        "version": "v1.15.0"
-    },
-    "symfony/polyfill-intl-idn": {
-        "version": "v1.15.0"
-    },
     "symfony/polyfill-intl-normalizer": {
         "version": "v1.15.0"
     },
@@ -449,15 +395,6 @@
     },
     "symfony/polyfill-php81": {
         "version": "v1.23.0"
-    },
-    "symfony/process": {
-        "version": "v5.0.7"
-    },
-    "symfony/property-access": {
-        "version": "v5.0.7"
-    },
-    "symfony/property-info": {
-        "version": "v5.0.7"
     },
     "symfony/proxy-manager-bridge": {
         "version": "v6.0.6"
@@ -474,9 +411,6 @@
             "config/packages/routing.yaml",
             "config/routes.yaml"
         ]
-    },
-    "symfony/serializer": {
-        "version": "v5.0.7"
     },
     "symfony/service-contracts": {
         "version": "v2.0.1"
@@ -506,25 +440,10 @@
             "templates/base.html.twig"
         ]
     },
-    "symfony/validator": {
-        "version": "6.1",
-        "recipe": {
-            "repo": "github.com/symfony/recipes",
-            "branch": "main",
-            "version": "5.3",
-            "ref": "c32cfd98f714894c4f128bb99aa2530c1227603c"
-        },
-        "files": [
-            "config/packages/validator.yaml"
-        ]
-    },
     "symfony/var-dumper": {
         "version": "v5.0.7"
     },
     "symfony/var-exporter": {
-        "version": "v5.0.7"
-    },
-    "symfony/web-link": {
         "version": "v5.0.7"
     },
     "symfony/web-profiler-bundle": {
@@ -548,9 +467,6 @@
     },
     "twbs/bootstrap": {
         "version": "v4.4.1"
-    },
-    "twig/extra-bundle": {
-        "version": "v3.0.3"
     },
     "twig/twig": {
         "version": "v3.0.3"
