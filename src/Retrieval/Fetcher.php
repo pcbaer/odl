@@ -2,6 +2,7 @@
 declare(strict_types = 1);
 namespace App\Retrieval;
 
+use Symfony\Component\DependencyInjection\ParameterBag\ContainerBagInterface;
 use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Contracts\HttpClient\Exception\ExceptionInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
@@ -27,8 +28,13 @@ class Fetcher
 
 	protected HttpClientInterface $client;
 
-	public function __construct() {
-		$this->client = HttpClient::create(['headers' => ['Accept' => 'application/json']]);
+	public function __construct(ContainerBagInterface $config) {
+		$verify       = (bool)$config->get('odl.fetcher.verify');
+		$this->client = HttpClient::create([
+			'verify_host' => $verify,
+			'verify_peer' => $verify,
+			'headers'     => ['Accept' => 'application/json']
+	    ]);
 	}
 
 	/**
