@@ -2,98 +2,67 @@
 declare(strict_types = 1);
 namespace App\Entity;
 
-use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Mapping\Column;
+use Doctrine\ORM\Mapping\Entity;
+use Doctrine\ORM\Mapping\GeneratedValue;
+use Doctrine\ORM\Mapping\Id;
 
-/**
- * @ORM\Entity(repositoryClass="App\Repository\StationRepository")
- */
+use App\Repository\StationRepository;
+
+#[Entity(repositoryClass: StationRepository::class)]
 class Station implements \Stringable
 {
-	/**
-	 * @ORM\Id()
-	 * @ORM\GeneratedValue()
-	 * @ORM\Column(type="smallint")
-	 */
+	#[Column(type: 'smallint')]
+	#[GeneratedValue]
+	#[Id]
 	protected int $id = 0;
 
-	/**
-	 * @ORM\Column(type="string", length=9)
-	 */
+	#[Column(length: 9)]
 	protected string $odlId = '';
 
-	/**
-	 * @ORM\Column(type="string", length=7, name="odl_id_2")
-	 */
+	#[Column(name: 'odl_id_2', length: 7)]
 	protected string $odlId2 = '';
 
-	/**
-	 * @ORM\Column(type="string", length=5)
-	 */
+	#[Column(length: 5)]
 	protected string $zip = '';
 
-	/**
-	 * @ORM\Column(type="string", length=255)
-	 */
+	#[Column(length: 255)]
 	protected string $city = '';
 
-	/**
-	 * @ORM\Column(type="smallint")
-	 */
+	#[Column(type: 'smallint')]
 	protected int $kid = 0;
 
-	/**
-	 * @ORM\Column(type="smallint")
-	 */
+	#[Column(type: 'smallint')]
 	protected int $altitude = 0;
 
-	/**
-	 * @ORM\Column(type="float")
-	 */
+	#[Column]
 	protected float $latitude = 0.0;
 
-	/**
-	 * @ORM\Column(type="float")
-	 */
+	#[Column]
 	protected float $longitude = 0.0;
 
-	/**
-	 * @ORM\Column(type="smallint")
-	 */
+	#[Column(type: 'smallint')]
 	protected int $status = 0;
 
-	/**
-	 * @ORM\Column(type="string", length=255)
-	 */
+	#[Column(length: 255)]
 	protected string $statusText = '';
 
-	/**
-	 * @ORM\Column(type="datetime")
-	 */
+	#[Column]
 	protected ?\DateTime $lastTimestamp = null;
 
-	/**
-	 * @ORM\Column(type="float")
-	 */
+	#[Column]
 	protected float $lastValue = 0.0;
 
-	/**
-	 * @ORM\Column(type="string", length=8)
-	 */
+	#[Column(length: 8)]
 	protected string $unit = '';
 
-	/**
-	 * @ORM\Column(type="string", length=10)
-	 */
+	#[Column(length: 10)]
 	protected string $duration = '';
 
-	/**
-	 * @ORM\Column(type="boolean")
-	 */
+	#[Column]
 	protected bool $isValidated = false;
 
-	/**
-	 * @ORM\Column(type="string", length=255)
-	 */
+	#[Column(length: 255)]
 	protected string $nuclide = '';
 
 	public function __toString(): string {

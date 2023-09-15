@@ -108,15 +108,6 @@
     "phar-io/version": {
         "version": "3.0.2"
     },
-    "phpdocumentor/reflection-common": {
-        "version": "2.0.0"
-    },
-    "phpdocumentor/reflection-docblock": {
-        "version": "5.1.0"
-    },
-    "phpdocumentor/type-resolver": {
-        "version": "1.1.0"
-    },
     "phpspec/prophecy": {
         "version": "1.12.1"
     },
@@ -199,9 +190,6 @@
     },
     "sebastian/recursion-context": {
         "version": "4.0.4"
-    },
-    "sebastian/resource-operations": {
-        "version": "3.0.3"
     },
     "sebastian/type": {
         "version": "2.3.1"
@@ -470,8 +458,5 @@
     },
     "twig/twig": {
         "version": "v3.0.3"
-    },
-    "webmozart/assert": {
-        "version": "1.7.0"
     }
 }
