@@ -24,9 +24,6 @@ class ChartController extends AbstractController
 
 	protected \DateTimeInterface $from;
 
-	/**
-	 * @throws \Exception
-	 */
 	public function __construct(ContainerBagInterface $config, StationRepository $stationRepository,
 								protected StationData $stationData) {
 		$this->own      = (int)$config->get('odl.chart.own');
@@ -53,9 +50,6 @@ class ChartController extends AbstractController
 		return $this->render('chart/index.html.twig');
 	}
 
-	/**
-	 * @throws \Doctrine\DBAL\Exception
-	 */
 	#[Route('/data', 'data')]
 	public function data(): JsonResponse {
 		$data   = [];
