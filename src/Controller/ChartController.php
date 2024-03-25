@@ -48,17 +48,15 @@ class ChartController extends AbstractController
 		$this->stationData->setFrom($this->from);
 	}
 
-	/**
-	 * @Route("/", name="index")
-	 */
+	#[Route('/', 'index')]
 	public function index(): Response {
 		return $this->render('chart/index.html.twig');
 	}
 
 	/**
-	 * @Route("/data", name="data")
 	 * @throws \Doctrine\DBAL\Exception
 	 */
+	#[Route('/data', 'data')]
 	public function data(): JsonResponse {
 		$data   = [];
 		$labels = [];
