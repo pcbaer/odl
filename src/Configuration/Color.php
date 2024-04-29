@@ -20,6 +20,8 @@ final class Color implements \Stringable
 
 	public const RED = 'ffa366';
 
+	public const ROSE = 'eed5d2';
+
 	public const YELLOW = 'ffff43';
 
 	private const FALLBACK = '000000';
