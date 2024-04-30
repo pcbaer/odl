@@ -11,8 +11,8 @@
         }
     ],
     "homepage": "https://www.hallerbach-it.de",
-    "time": "2024-04-29",
-    "version": "2.4.1",
+    "time": "2024-04-30",
+    "version": "2.4.2",
 
     "require": {
         "php": "~8.2",
