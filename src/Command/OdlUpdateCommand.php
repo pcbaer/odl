@@ -2,6 +2,8 @@
 declare(strict_types = 1);
 namespace App\Command;
 
+use Random\Engine\Mt19937;
+use Random\Randomizer;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -69,6 +71,9 @@ class OdlUpdateCommand extends Command
 		$i     = 0;
 		$n     = count($stations);
 		$this->io->note($this->date() . $n . ' stations found.');
+		$randomizer = new Randomizer(new Mt19937());
+		$stations   = $randomizer->shuffleArray($stations);
+		$this->io->note(count($stations) . ' stations shuffled.');
 
 		foreach ($stations as $station) {
 			sleep(2);
