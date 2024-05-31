@@ -11,8 +11,8 @@
         }
     ],
     "homepage": "https://www.hallerbach-it.de",
-    "time": "2024-05-02",
-    "version": "2.4.3",
+    "time": "2024-05-31",
+    "version": "2.4.4",
 
     "require": {
         "php": "~8.2",
@@ -21,7 +21,7 @@
         "ext-json": "~8.2",
         "doctrine/doctrine-bundle": "~2.12",
         "doctrine/doctrine-migrations-bundle": "~3.3",
-        "doctrine/orm": "~3.1",
+        "doctrine/orm": "~3.2",
         "moment/moment": "~2.30",
         "nnnick/chartjs": "~2.9",
         "symfony/apache-pack": "~1.0",
@@ -36,7 +36,7 @@
         "symfony/twig-bundle": "~7.0",
         "symfony/yaml": "~7.0",
         "twbs/bootstrap": "~5.3",
-        "twig/twig": "~3.9"
+        "twig/twig": "~3.10"
     },
     "require-dev": {
         "sat-hub/phpunit": "~1.11",
@@ -44,7 +44,7 @@
         "symfony/css-selector": "~7.0",
         "symfony/debug-bundle": "~7.0",
         "symfony/maker-bundle": "~1.59",
-        "symfony/phpunit-bridge": "~7.0",
+        "symfony/phpunit-bridge": "~7.1",
         "symfony/stopwatch": "~7.0",
         "symfony/web-profiler-bundle": "~7.0"
     },
