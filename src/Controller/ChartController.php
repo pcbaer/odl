@@ -2,13 +2,13 @@
 declare(strict_types = 1);
 namespace App\Controller;
 
-use App\Configuration\Color;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\DependencyInjection\ParameterBag\ContainerBagInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 
+use App\Configuration\Color;
 use App\Dosage\StationData;
 use App\Repository\StationRepository;
 
