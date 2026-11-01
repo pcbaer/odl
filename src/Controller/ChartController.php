@@ -30,7 +30,7 @@ class ChartController extends AbstractController
 		$this->ownLabel = $config->get('odl.chart.own.label');
 
 		foreach (explode(',', $config->get('odl.chart.stations')) as $city) {
-			$this->stations[] = $stationRepository->findOneBy(['city' => trim($city)]);
+			$this->stations[] = $stationRepository->findOneBy(['city' => trim($city)], ['id' => 'DESC']);
 		}
 		foreach (explode(',', $config->get('odl.chart.colors')) as $name) {
 			$color          = new Color($name);
